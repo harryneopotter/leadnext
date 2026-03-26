@@ -83,17 +83,13 @@ export default async function AdminsPage() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                 {admins.map((admin: any) => (
-                  <Link 
+                  <div 
                     key={admin.id} 
-                    href={`/admins/${admin.id}`}
                     style={{
                       display: "flex", alignItems: "center", gap: "0.75rem",
                       padding: "1rem",
                       borderRadius: "0.5rem",
                       background: "var(--surface-low)",
-                      textDecoration: "none",
-                      color: "inherit",
-                      transition: "background 0.15s",
                     }}
                   >
                     <div style={{
@@ -119,7 +115,7 @@ export default async function AdminsPage() {
                     }}>
                       {admin.status}
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}
