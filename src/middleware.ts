@@ -2,8 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const sessionCookie = request.cookies.get("next-auth.session-token");
+  // Check for both dev and production cookie names
+  const sessionCookie = request.cookies.get("next-auth.session-token") || 
+                        request.cookies.get("__Secure-next-auth.session-token");
   const path = request.nextUrl.pathname;
+
+  // Skip API auth routes entirely
+  if (path.startsWith("/api/auth")) {
+    return NextResponse.next();
+  }
 
   const isLoggedIn = !!sessionCookie;
   const isPublicPath = path === "/login" || path === "/";
@@ -20,5 +27,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/super-admin/:path*", "/leads/:path*", "/followups/:path*", "/settings/:path*"],
+  matcher: [
+    "/dashboard/:path*", 
+    "/admin/:path*", 
+    "/super-admin/:path*", 
+    "/leads/:path*", 
+    "/followups/:path*", 
+    "/settings/:path*"
+  ],
 };

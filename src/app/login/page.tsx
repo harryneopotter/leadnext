@@ -32,8 +32,8 @@ function LoginForm() {
       if (result?.error) {
         setError("Invalid email or password. Please try again.");
       } else if (result?.ok) {
-        router.push(callbackUrl);
-        router.refresh();
+        // Use window.location for full page reload to ensure session is loaded
+        window.location.href = callbackUrl;
       }
     } catch {
       setError("An unexpected error occurred. Please try again.");
