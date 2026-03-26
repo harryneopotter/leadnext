@@ -11,6 +11,9 @@ import {
   ArrowRight,
   MessageCircle,
   Clock,
+  Shield,
+  Users,
+  CheckCircle2,
 } from "lucide-react";
 
 /* ─── Mock data (will be replaced by real DB queries) ───────── */
@@ -54,6 +57,153 @@ export default async function DashboardPage() {
   if (!session?.user) redirect("/login");
   const user = session.user;
 
+  // Super Admin sees tenant management, not lead data
+  if (user.role === "SUPER_ADMIN") {
+    return <SuperAdminDashboard user={user} />;
+  }
+
+  return <AdminDashboard user={user} />;
+}
+
+// Super Admin: Tenant Management View
+function SuperAdminDashboard({ user }: { user: any }) {
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
+      <Sidebar
+        userRole={user.role}
+        userName={user.name ?? undefined}
+        userEmail={user.email ?? undefined}
+      />
+
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+        {/* Top bar */}
+        <header style={{
+          background: "var(--surface-card)",
+          borderBottom: "1px solid var(--outline-ghost)",
+          padding: "0 1.5rem",
+          height: "56px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}>
+          <div>
+            <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
+              Super Admin Dashboard
+            </h1>
+            <p style={{ fontSize: "0.6875rem", color: "var(--text-muted)", margin: 0 }}>
+              Manage tenants and system settings
+            </p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <span style={{ fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
+              {user.name || user.email}
+            </span>
+            <form action={async () => { "use server"; await signOut(); }}>
+              <button type="submit" style={{
+                fontSize: "0.75rem", color: "#ef4444",
+                background: "none", border: "none", cursor: "pointer", padding: "0.25rem 0.5rem",
+                borderRadius: "0.25rem", transition: "background 0.15s"
+              }}>
+                Sign out
+              </button>
+            </form>
+          </div>
+        </header>
+
+        {/* Super Admin Content */}
+        <main style={{ flex: 1, padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {/* Stats */}
+          <section style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
+            {[
+              { label: "Total Admins", value: "3", icon: <Shield size={20} />, color: "#3b82f6" },
+              { label: "Total Clients", value: "12", icon: <Users size={20} />, color: "#10b981" },
+              { label: "Total Leads", value: "1,247", icon: <TrendingUp size={20} />, color: "#f59e0b" },
+              { label: "System Status", value: "Active", icon: <CheckCircle2 size={20} />, color: "#10b981" },
+            ].map((s) => (
+              <div key={s.label} className="stat-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div>
+                    <p style={{ fontSize: "0.6875rem", fontWeight: "600", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 0.5rem" }}>
+                      {s.label}
+                    </p>
+                    <p style={{ fontSize: "2rem", fontWeight: "700", color: "var(--text-primary)", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
+                      {s.value}
+                    </p>
+                  </div>
+                  <div style={{
+                    width: "40px", height: "40px", borderRadius: "0.5rem",
+                    background: s.color + "18",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: s.color, flexShrink: 0,
+                  }}>
+                    {s.icon}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* Tenants Table */}
+          <section className="card" style={{ padding: "1.25rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h2 style={{ fontSize: "0.875rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
+                Recent Admins
+              </h2>
+              <Link href="/admin" style={{ fontSize: "0.75rem", color: "var(--emerald)", textDecoration: "none", fontWeight: "600" }}>
+                Manage All
+              </Link>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {[
+                { name: "Admin User", email: "admin@leadcrm.com", clients: 5, status: "Active" },
+                { name: "Sales Team Lead", email: "sales@company.com", clients: 3, status: "Active" },
+                { name: "Support Admin", email: "support@company.com", clients: 4, status: "Inactive" },
+              ].map((admin, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "center", gap: "0.75rem",
+                  padding: "0.75rem",
+                  borderRadius: "0.375rem",
+                  background: "var(--surface-low)",
+                }}>
+                  <div style={{
+                    width: "36px", height: "36px", borderRadius: "50%",
+                    background: "linear-gradient(135deg, #1e293b, #334155)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "0.75rem", fontWeight: "700", color: "#10b981",
+                  }}>
+                    {admin.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.875rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                      {admin.name}
+                    </div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{admin.email}</div>
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{admin.clients} clients</div>
+                  <div style={{
+                    fontSize: "0.625rem", fontWeight: "600",
+                    background: admin.status === "Active" ? "#d1fae5" : "#fee2e2",
+                    color: admin.status === "Active" ? "#065f46" : "#991b1b",
+                    padding: "0.125rem 0.5rem", borderRadius: "9999px",
+                  }}>
+                    {admin.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// Admin/Client: Lead Dashboard View  
+function AdminDashboard({ user }: { user: any }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
       {/* ── Sidebar ── */}
