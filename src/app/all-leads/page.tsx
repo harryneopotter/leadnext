@@ -15,20 +15,15 @@ export default async function AllLeadsPage() {
     redirect("/dashboard");
   }
 
-  // Fetch real leads from database with client and admin info
+  // Fetch real leads from database with admin info
   const leads = await prisma.lead.findMany({
     select: {
       id: true,
       name: true,
       phone: true,
       status: true,
-      client: {
-        select: {
-          name: true,
-          admin: {
-            select: { name: true }
-          }
-        }
+      admin: {
+        select: { name: true, email: true }
       }
     },
     orderBy: { createdAt: "desc" },
@@ -125,7 +120,7 @@ export default async function AllLeadsPage() {
                         {lead.status.replace("_", " ")}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        {lead.client?.name || "Unknown"} via {lead.client?.admin?.name || "Unknown"}
+                        {lead.admin?.name || "Unknown"} ({lead.admin?.email || "no email"})
                       </div>
                     </div>
                   </Link>

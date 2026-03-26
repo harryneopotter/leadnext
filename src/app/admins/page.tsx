@@ -15,7 +15,7 @@ export default async function AdminsPage() {
     redirect("/dashboard");
   }
 
-  // Fetch real admins from database with their client counts
+  // Fetch real admins from database with their lead counts
   const admins = await prisma.user.findMany({
     where: { role: "ADMIN" },
     select: {
@@ -24,7 +24,7 @@ export default async function AdminsPage() {
       email: true,
       status: true,
       _count: {
-        select: { clients: true }
+        select: { leads: true }
       }
     },
     orderBy: { createdAt: "desc" }
@@ -106,7 +106,7 @@ export default async function AdminsPage() {
                       </div>
                       <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{admin.email}</div>
                     </div>
-                    <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{admin._count.clients} clients</div>
+                    <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{admin._count.leads} leads</div>
                     <div style={{
                       fontSize: "0.75rem", fontWeight: "600",
                       background: admin.status === "ACTIVE" ? "#d1fae5" : "#fee2e2",

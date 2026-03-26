@@ -29,7 +29,6 @@ const adminNavItems: NavItem[] = [
 const superAdminNavItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
   { label: "Admins",    href: "/admins",    icon: <Users size={18} /> },
-  { label: "Clients",   href: "/clients",   icon: <Users size={18} /> },
   { label: "All Leads", href: "/all-leads", icon: <LayoutDashboard size={18} /> },
   { label: "Settings",  href: "/settings",  icon: <Settings size={18} /> },
 ];

@@ -11,34 +11,26 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── USER MANAGEMENT ─────────────────────────
+// ─── USERS ───────────────────────────────────
 
 model User {
-  id            String     @id @default(uuid())
-  email         String     @unique
-  password      String     // hashed with bcrypt
-  name          String
-  role          UserRole   @default(CLIENT)
-  status        UserStatus @default(ACTIVE)
-  
-  // For CLIENT role: reference to the admin who created them
-  adminId       String?
-  admin         User?      @relation("AdminClients", fields: [adminId], references: [id])
-  clients       User[]     @relation("AdminClients")
-  
-  // Client-specific settings
-  settings      Json?      // { timezone, notificationPreferences, etc. }
-  
-  // Timestamps
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  lastLoginAt   DateTime?
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String      // bcrypt, cost factor >= 12. NEVER plaintext.
+  name        String
+  role        UserRole    @default(ADMIN)
+  status      UserStatus  @default(ACTIVE)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  lastLoginAt DateTime?
 
   // Relations
   leads         Lead[]
   activities    ActivityLog[]
-  
-  @@index([adminId])
+  followUps     FollowUp[]
+  settings      AdminSettings?
+
   @@index([role])
   @@index([status])
 }
@@ -46,7 +38,7 @@ model User {
 enum UserRole {
   SUPER_ADMIN
   ADMIN
-  CLIENT
+  CLIENT     // Reserved for V2 — do not implement in V1
 }
 
 enum UserStatus {
@@ -55,45 +47,75 @@ enum UserStatus {
   DELETED
 }
 
-// ─── LEADS ───────────────────────────────────
+// ─── ADMIN SETTINGS (per-admin config) ────────────────────────────
+// Each ADMIN has their own WhatsApp Business number and credentials.
+// There is NO global WhatsApp config. Each business client = separate Meta setup.
+// whatsappToken and smtpPass are AES-256 encrypted before storage.
+
+model AdminSettings {
+  id                      String   @id @default(uuid())
+
+  adminId                 String   @unique
+  admin                   User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  // WhatsApp (per-admin — each business has their own Meta number)
+  whatsappToken           String?  // AES-256 encrypted
+  whatsappPhoneNumberId   String?
+  whatsappWebhookSecret   String?  // AES-256 encrypted
+
+  // Email (per-admin SMTP)
+  smtpHost                String?
+  smtpPort                Int?
+  smtpUser                String?
+  smtpPass                String?  // AES-256 encrypted
+  emailFrom               String?
+
+  // Preferences
+  timezone                String   @default("Asia/Kolkata")
+  reminderLeadTime        Int      @default(30) // minutes before follow-up to fire reminder
+
+  updatedAt               DateTime @updatedAt
+}
+
+// ─── SYSTEM SETTINGS (global, SUPER_ADMIN only) ───────────────────
+// Platform-level config only. WhatsApp/email config is in AdminSettings.
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  settings  Json?
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+// ─── LEADS ────────────────────────────────────────────────────────
 
 model Lead {
-  id              String     @id @default(uuid())
-  
-  // Multi-tenancy: each lead belongs to a client
-  clientId        String
-  client          User       @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
-  // Core lead data
-  name            String
-  phone           String
-  email           String?
-  city            String?
-  source          LeadSource @default(MANUAL)
-  
-  // Status workflow
-  status          LeadStatus @default(NEW)
-  
-  // Follow-up system
-  remarks         String?
-  followUpDate    DateTime?
-  reminderSent    Boolean    @default(false)
-  
-  // WhatsApp integration
-  whatsappOptIn   Boolean    @default(false)
-  
-  // Timestamps
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  
-  // Relations
-  activities      ActivityLog[]
-  
-  @@index([clientId])
+  id          String      @id @default(uuid())
+
+  // Each lead belongs to one ADMIN (their data space)
+  adminId     String
+  admin       User        @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  name        String
+  phone       String
+  email       String?
+  city        String?
+  source      LeadSource  @default(MANUAL)
+  status      LeadStatus  @default(NEW)
+  remarks     String?
+  whatsappOptIn Boolean   @default(false)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  activities  ActivityLog[]
+  followUps   FollowUp[]
+
+  @@index([adminId])
   @@index([status])
-  @@index([followUpDate])
   @@index([phone])
-  @@unique([clientId, phone]) // Phone must be unique per client
+  @@index([createdAt])
+  @@unique([adminId, phone]) // Phone unique per admin, not globally
 }
 
 enum LeadSource {
@@ -115,45 +137,67 @@ enum LeadStatus {
   FOLLOW_UP
 }
 
-// ─── ACTIVITY LOG ─────────────────────────────
+// ─── FOLLOW-UPS ───────────────────────────────────────────────────
+// Replaces the PHP `follow_up_date + reminder_sent BOOLEAN` pattern.
+// A lead can have multiple follow-ups over its lifecycle.
+// adminId is intentionally denormalized here for efficient dashboard queries
+// ("show today's follow-ups for admin X") without joining through Lead.
+
+model FollowUp {
+  id              String          @id @default(uuid())
+
+  leadId          String
+  lead            Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  adminId         String          // Denormalized from lead — kept for query efficiency
+  admin           User            @relation(fields: [adminId], references: [id])
+
+  scheduledAt     DateTime        // When the follow-up is due
+  status          FollowUpStatus  @default(PENDING)
+
+  reminderSentAt  DateTime?       // Null = reminder not yet fired
+  reminderChannel String?         // "whatsapp" | "email" | "both"
+
+  completedAt     DateTime?
+  snoozedUntil    DateTime?       // If snoozed, the new target datetime
+  notes           String?         // What happened in this follow-up
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([leadId])
+  @@index([adminId])
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+enum FollowUpStatus {
+  PENDING     // Scheduled, reminder not yet sent
+  REMINDED    // Reminder sent, awaiting action
+  COMPLETED   // Done
+  SNOOZED     // Pushed to snoozedUntil datetime
+  CANCELLED
+}
+
+// ─── ACTIVITY LOG ─────────────────────────────────────────────────
 
 model ActivityLog {
-  id          String   @id @default(uuid())
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
-  
-  leadId      String?
-  lead        Lead?    @relation(fields: [leadId], references: [id])
-  
-  action      String   // "CREATE_LEAD", "UPDATE_STATUS", "SEND_WHATSAPP", etc.
-  details     Json?    // { oldValue, newValue, metadata }
-  
-  createdAt   DateTime @default(now())
-  
+  id        String   @id @default(uuid())
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id])
+
+  // Action strings: "CREATE_LEAD", "UPDATE_STATUS", "SEND_WHATSAPP",
+  // "FOLLOW_UP_CREATED", "FOLLOW_UP_COMPLETED", "FOLLOW_UP_SNOOZED", etc.
+  action    String
+  details   Json?    // { oldValue, newValue, metadata }
+
+  createdAt DateTime @default(now())
+
   @@index([userId])
   @@index([leadId])
   @@index([createdAt])
-}
-
-// ─── SYSTEM SETTINGS ─────────────────────────
-
-model SystemSettings {
-  id                    String   @id @default(cuid())
-  
-  // WhatsApp API Configuration
-  whatsappToken         String?  // Encrypted
-  whatsappPhoneNumberId String?
-  whatsappWebhookSecret String?
-  
-  // Email Configuration
-  smtpHost              String?
-  smtpPort              Int?
-  smtpUser              String?
-  smtpPass              String?  // Encrypted
-  
-  // Global settings
-  settings              Json?
-  
-  updatedAt             DateTime @updatedAt
-  updatedBy             String?
 }

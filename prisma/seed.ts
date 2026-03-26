@@ -8,7 +8,7 @@ const prisma = new PrismaClient({})
 
 async function main() {
   // Create Super Admin
-  const superAdminPassword = await bcrypt.hash('superadmin123', 10)
+  const superAdminPassword = await bcrypt.hash('superadmin123', 12)
   const superAdmin = await prisma.user.upsert({
     where: { email: 'superadmin@leadcrm.com' },
     update: {},
@@ -23,7 +23,7 @@ async function main() {
   console.log('Super Admin created:', superAdmin.email)
 
   // Create Admin
-  const adminPassword = await bcrypt.hash('admin123', 10)
+  const adminPassword = await bcrypt.hash('admin123', 12)
   const admin = await prisma.user.upsert({
     where: { email: 'admin@leadcrm.com' },
     update: {},
@@ -37,23 +37,7 @@ async function main() {
   })
   console.log('Admin created:', admin.email)
 
-  // Create Sample Client
-  const clientPassword = await bcrypt.hash('client123', 10)
-  const client = await prisma.user.upsert({
-    where: { email: 'client@leadcrm.com' },
-    update: {},
-    create: {
-      email: 'client@leadcrm.com',
-      name: 'Sample Client',
-      password: clientPassword,
-      role: 'CLIENT',
-      status: 'ACTIVE',
-      adminId: admin.id,
-    },
-  })
-  console.log('Client created:', client.email)
-
-  // Create sample leads for the client
+  // Create sample leads for the admin
   const sampleLeads = [
     {
       name: 'John Doe',
@@ -72,7 +56,6 @@ async function main() {
       source: 'FACEBOOK' as const,
       status: 'INTERESTED' as const,
       remarks: 'Follow up next week',
-      followUpDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
     {
       name: 'Bob Johnson',
@@ -88,15 +71,15 @@ async function main() {
   for (const leadData of sampleLeads) {
     await prisma.lead.upsert({
       where: {
-        clientId_phone: {
-          clientId: client.id,
+        adminId_phone: {
+          adminId: admin.id,
           phone: leadData.phone,
         },
       },
       update: {},
       create: {
         ...leadData,
-        clientId: client.id,
+        adminId: admin.id,
       },
     })
   }

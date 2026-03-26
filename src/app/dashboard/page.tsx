@@ -33,40 +33,24 @@ export default async function DashboardPage() {
   // Super Admin sees tenant management, not lead data
   if (user.role === "SUPER_ADMIN") {
     // Fetch real counts from database
-    const [adminCount, clientCount, leadCount] = await Promise.all([
+    const [adminCount, leadCount] = await Promise.all([
       prisma.user.count({ where: { role: "ADMIN" } }),
-      prisma.user.count({ where: { role: "CLIENT" } }),
       prisma.lead.count(),
     ]);
 
-    return <SuperAdminDashboard user={user} adminCount={adminCount} clientCount={clientCount} leadCount={leadCount} />;
+    return <SuperAdminDashboard user={user} adminCount={adminCount} leadCount={leadCount} />;
   }
 
-  // For Admin/Client - fetch their leads
-  // Leads belong to clients, so for ADMIN we need to find leads of their clients
-  let totalLeads = 0;
-  if (user.role === "ADMIN") {
-    // Get all client IDs belonging to this admin
-    const clients = await prisma.user.findMany({
-      where: { adminId: user.id, role: "CLIENT" },
-      select: { id: true }
-    });
-    const clientIds = clients.map(c => c.id);
-    totalLeads = await prisma.lead.count({
-      where: { clientId: { in: clientIds } }
-    });
-  } else {
-    // For CLIENT role
-    totalLeads = await prisma.lead.count({
-      where: { clientId: user.id }
-    });
-  }
+  // For ADMIN - fetch their leads directly via adminId
+  const totalLeads = await prisma.lead.count({
+    where: { adminId: user.id }
+  });
 
   return <AdminDashboard user={user} totalLeads={totalLeads} />;
 }
 
 // Super Admin: Tenant Management View
-function SuperAdminDashboard({ user, adminCount, clientCount, leadCount }: { user: any, adminCount: number, clientCount: number, leadCount: number }) {
+function SuperAdminDashboard({ user, adminCount, leadCount }: { user: any, adminCount: number, leadCount: number }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
       <Sidebar
@@ -117,10 +101,9 @@ function SuperAdminDashboard({ user, adminCount, clientCount, leadCount }: { use
         {/* Super Admin Content */}
         <main style={{ flex: 1, padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Stats */}
-          <section style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
+          <section style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
             {[
               { label: "Total Admins", value: adminCount.toString(), icon: <Shield size={20} />, color: "#3b82f6", href: "/admins" },
-              { label: "Total Clients", value: clientCount.toString(), icon: <Users size={20} />, color: "#10b981", href: "/clients" },
               { label: "Total Leads", value: leadCount.toLocaleString(), icon: <TrendingUp size={20} />, color: "#f59e0b", href: "/all-leads" },
               { label: "System Status", value: "Active", icon: <CheckCircle2 size={20} />, color: "#10b981", href: null },
             ].map((s) => (
@@ -159,15 +142,15 @@ function SuperAdminDashboard({ user, adminCount, clientCount, leadCount }: { use
               <h2 style={{ fontSize: "0.875rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
                 Recent Admins
               </h2>
-              <Link href="/admin" style={{ fontSize: "0.75rem", color: "var(--emerald)", textDecoration: "none", fontWeight: "600" }}>
+              <Link href="/admins" style={{ fontSize: "0.75rem", color: "var(--emerald)", textDecoration: "none", fontWeight: "600" }}>
                 Manage All
               </Link>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               {[
-                { name: "Admin User", email: "admin@leadcrm.com", clients: 5, status: "Active" },
-                { name: "Sales Team Lead", email: "sales@company.com", clients: 3, status: "Active" },
-                { name: "Support Admin", email: "support@company.com", clients: 4, status: "Inactive" },
+                { name: "Admin User", email: "admin@leadcrm.com", leads: 5, status: "Active" },
+                { name: "Sales Team Lead", email: "sales@company.com", leads: 3, status: "Active" },
+                { name: "Support Admin", email: "support@company.com", leads: 4, status: "Inactive" },
               ].map((admin, i) => (
                 <div key={i} style={{
                   display: "flex", alignItems: "center", gap: "0.75rem",
@@ -189,7 +172,7 @@ function SuperAdminDashboard({ user, adminCount, clientCount, leadCount }: { use
                     </div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{admin.email}</div>
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{admin.clients} clients</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{admin.leads} leads</div>
                   <div style={{
                     fontSize: "0.625rem", fontWeight: "600",
                     background: admin.status === "Active" ? "#d1fae5" : "#fee2e2",
