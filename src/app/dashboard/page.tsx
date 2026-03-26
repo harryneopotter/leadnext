@@ -119,31 +119,37 @@ function SuperAdminDashboard({ user }: { user: any }) {
           {/* Stats */}
           <section style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
             {[
-              { label: "Total Admins", value: "3", icon: <Shield size={20} />, color: "#3b82f6" },
-              { label: "Total Clients", value: "12", icon: <Users size={20} />, color: "#10b981" },
-              { label: "Total Leads", value: "1,247", icon: <TrendingUp size={20} />, color: "#f59e0b" },
-              { label: "System Status", value: "Active", icon: <CheckCircle2 size={20} />, color: "#10b981" },
+              { label: "Total Admins", value: "3", icon: <Shield size={20} />, color: "#3b82f6", href: "/admins" },
+              { label: "Total Clients", value: "12", icon: <Users size={20} />, color: "#10b981", href: "/clients" },
+              { label: "Total Leads", value: "1,247", icon: <TrendingUp size={20} />, color: "#f59e0b", href: "/all-leads" },
+              { label: "System Status", value: "Active", icon: <CheckCircle2 size={20} />, color: "#10b981", href: null },
             ].map((s) => (
-              <div key={s.label} className="stat-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <p style={{ fontSize: "0.6875rem", fontWeight: "600", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 0.5rem" }}>
-                      {s.label}
-                    </p>
-                    <p style={{ fontSize: "2rem", fontWeight: "700", color: "var(--text-primary)", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
-                      {s.value}
-                    </p>
-                  </div>
-                  <div style={{
-                    width: "40px", height: "40px", borderRadius: "0.5rem",
-                    background: s.color + "18",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    color: s.color, flexShrink: 0,
-                  }}>
-                    {s.icon}
+              <Link 
+                key={s.label} 
+                href={s.href || "#"}
+                style={{ textDecoration: "none" }}
+              >
+                <div className="stat-card" style={{ cursor: s.href ? "pointer" : "default" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <p style={{ fontSize: "0.6875rem", fontWeight: "600", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 0.5rem" }}>
+                        {s.label}
+                      </p>
+                      <p style={{ fontSize: "2rem", fontWeight: "700", color: "var(--text-primary)", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
+                        {s.value}
+                      </p>
+                    </div>
+                    <div style={{
+                      width: "40px", height: "40px", borderRadius: "0.5rem",
+                      background: s.color + "18",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      color: s.color, flexShrink: 0,
+                    }}>
+                      {s.icon}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </section>
 

@@ -18,12 +18,20 @@ interface NavItem {
   adminOnly?: boolean;
 }
 
-const navItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
   { label: "Leads",     href: "/leads",     icon: <Users size={18} /> },
   { label: "Follow-ups",href: "/followups", icon: <CalendarClock size={18} /> },
   { label: "Settings",  href: "/settings",  icon: <Settings size={18} /> },
-  { label: "Admin",     href: "/admin",     icon: <Shield size={18} />, adminOnly: true },
+  { label: "Admin",     href: "/admin",     icon: <Shield size={18} /> },
+];
+
+const superAdminNavItems: NavItem[] = [
+  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { label: "Admins",    href: "/admins",    icon: <Users size={18} /> },
+  { label: "Clients",   href: "/clients",   icon: <Users size={18} /> },
+  { label: "All Leads", href: "/all-leads", icon: <LayoutDashboard size={18} /> },
+  { label: "Settings",  href: "/settings",  icon: <Settings size={18} /> },
 ];
 
 interface SidebarProps {
@@ -35,9 +43,8 @@ interface SidebarProps {
 export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
 
-  const visibleItems = navItems.filter(
-    (item) => !item.adminOnly || userRole === "ADMIN" || userRole === "SUPER_ADMIN"
-  );
+  // Different navigation for Super Admin vs Admin/Client
+  const navItems = userRole === "SUPER_ADMIN" ? superAdminNavItems : adminNavItems;
 
   const initials = userName
     ? userName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
@@ -87,7 +94,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: "0.75rem 0.625rem", display: "flex", flexDirection: "column", gap: "0.125rem" }}>
-        {visibleItems.map((item) => {
+        {navItems.map((item) => {
           const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
           return (
             <Link

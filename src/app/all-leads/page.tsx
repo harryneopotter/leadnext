@@ -1,0 +1,119 @@
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Sidebar } from "@/components/sidebar";
+import { ArrowLeft, LayoutDashboard, Filter } from "lucide-react";
+
+export default async function AllLeadsPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+  const user = session.user;
+
+  // Only SUPER_ADMIN can access
+  if (user.role !== "SUPER_ADMIN") {
+    redirect("/dashboard");
+  }
+
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
+      <Sidebar
+        userRole={user.role}
+        userName={user.name ?? undefined}
+        userEmail={user.email ?? undefined}
+      />
+
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+        {/* Header */}
+        <header style={{
+          background: "var(--surface-card)",
+          borderBottom: "1px solid var(--outline-ghost)",
+          padding: "0 1.5rem",
+          height: "56px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <Link href="/dashboard" style={{ color: "var(--text-muted)" }}>
+              <ArrowLeft size={18} />
+            </Link>
+            <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
+              All Leads (System-wide)
+            </h1>
+          </div>
+          <button style={{
+            display: "flex", alignItems: "center", gap: "0.5rem",
+            padding: "0.5rem 1rem",
+            background: "transparent",
+            color: "var(--text-secondary)",
+            border: "1px solid var(--outline-ghost)",
+            borderRadius: "0.375rem",
+            fontSize: "0.8125rem",
+            fontWeight: "600",
+            cursor: "pointer",
+          }}>
+            <Filter size={16} />
+            Filter
+          </button>
+        </header>
+
+        {/* Content */}
+        <main style={{ flex: 1, padding: "1.5rem" }}>
+          <div className="card" style={{ padding: "1.5rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[
+                { name: "Priya Sharma", phone: "+91 98765 43210", status: "HOT", client: "Acme Corp", admin: "Admin User" },
+                { name: "Amit Verma", phone: "+91 87654 32109", status: "INTERESTED", client: "TechStart Inc", admin: "Sales Team Lead" },
+                { name: "Sunita Patel", phone: "+91 76543 21098", status: "FOLLOW_UP", client: "Global Solutions", admin: "Admin User" },
+                { name: "Rohit Gupta", phone: "+91 65432 10987", status: "NEW", client: "Acme Corp", admin: "Admin User" },
+                { name: "Kavita Singh", phone: "+91 54321 09876", status: "INTERESTED", client: "Local Business", admin: "Support Admin" },
+              ].map((lead, i) => (
+                <Link 
+                  key={i} 
+                  href={`/all-leads/${i + 1}`}
+                  style={{
+                    display: "flex", alignItems: "center", gap: "0.75rem",
+                    padding: "1rem",
+                    borderRadius: "0.5rem",
+                    background: "var(--surface-low)",
+                    textDecoration: "none",
+                    color: "inherit",
+                    transition: "background 0.15s",
+                  }}
+                >
+                  <div style={{
+                    width: "40px", height: "40px", borderRadius: "50%",
+                    background: "linear-gradient(135deg, #1e293b, #334155)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "0.875rem", fontWeight: "700", color: "#10b981",
+                  }}>
+                    {lead.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.9375rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                      {lead.name}
+                    </div>
+                    <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{lead.phone}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{
+                      fontSize: "0.75rem", fontWeight: "600",
+                      background: lead.status === "HOT" ? "#fee2e2" : lead.status === "NEW" ? "#dbeafe" : lead.status === "CONVERTED" ? "#d1fae5" : "#fef9c3",
+                      color: lead.status === "HOT" ? "#991b1b" : lead.status === "NEW" ? "#1e40af" : lead.status === "CONVERTED" ? "#065f46" : "#713f12",
+                      padding: "0.25rem 0.75rem", borderRadius: "9999px", display: "inline-block", marginBottom: "0.25rem",
+                    }}>
+                      {lead.status.replace("_", " ")}
+                    </div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      {lead.client} via {lead.admin}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
