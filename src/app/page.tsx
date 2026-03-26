@@ -4,23 +4,23 @@ import { Layers, GitBranch, Zap, ArrowRight } from "lucide-react";
 const features = [
   {
     icon: <Layers size={22} />,
-    title: "Multi-tenant control",
+    title: "All Your Leads in One Place",
     description:
-      "SUPER_ADMIN oversees tenants, ADMINs manage clients, and guests see only their leads with secure scoping.",
+      "Capture leads from WhatsApp, forms, or manual entry. View, filter, and manage your entire pipeline from a single dashboard.",
     color: "#3b82f6",
   },
   {
     icon: <GitBranch size={22} />,
-    title: "Lead lifecycle",
+    title: "Track Lead Progress",
     description:
-      "Capture leads from WhatsApp, forms, or CSV, score them, log activities, and move them through pipelines.",
+      "Move leads through stages: New → Interested → Hot → Converted. Never lose track of a potential customer again.",
     color: "#10b981",
   },
   {
     icon: <Zap size={22} />,
-    title: "Follow-up automation",
+    title: "Automated Follow-ups",
     description:
-      "Schedule reminders, send WhatsApp/email nudges, and keep each conversation encrypted with AES-256 secrets.",
+      "Schedule reminders and send WhatsApp/email follow-ups automatically. Stay on top of every conversation.",
     color: "#f59e0b",
   },
 ];
@@ -36,38 +36,26 @@ export default function Home() {
             fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.5em",
             color: "var(--emerald)", fontWeight: "700", marginBottom: "1.25rem"
           }}>
-            LeadCRM SaaS
+            LeadCRM
           </p>
           <h1 style={{
             fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: "800", lineHeight: 1.15,
             letterSpacing: "-0.03em", color: "#f8fafc",
             maxWidth: "720px", marginBottom: "1.25rem"
           }}>
-            Build a WhatsApp-led CRM that scales across clients and admins.
+            Manage Your Leads. Close More Deals.
           </h1>
           <p style={{
             fontSize: "1rem", color: "#94a3b8", lineHeight: 1.7, maxWidth: "620px",
             marginBottom: "2rem"
           }}>
-            Modern Next.js 16 meets Supabase/PostgreSQL with Prisma 5, NextAuth v5,
-            and AES-256 secrets — every message stays private while follow-ups stay on schedule.
+            A complete CRM solution with WhatsApp integration. Track leads, 
+            schedule follow-ups, and convert conversations into customers.
           </p>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
             <Link href="/login">
               <button className="btn-emerald" style={{ padding: "0.75rem 1.5rem", fontSize: "0.875rem" }}>
-                Launch Dashboard <ArrowRight size={16} />
-              </button>
-            </Link>
-            <Link href="/dashboard">
-              <button style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.75rem 1.5rem", borderRadius: "0.375rem",
-                fontSize: "0.875rem", fontWeight: "600",
-                color: "#cbd5e1", background: "transparent",
-                border: "1.5px solid rgba(203,213,225,0.25)",
-                cursor: "pointer", transition: "border-color 0.15s",
-              }}>
-                Try Demo Data
+                Sign In to Dashboard <ArrowRight size={16} />
               </button>
             </Link>
           </div>
@@ -110,17 +98,16 @@ export default function Home() {
         }}>
           <div>
             <p style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.4em", color: "var(--emerald)", fontWeight: "700", marginBottom: "0.75rem" }}>
-              Overview
+              How It Works
             </p>
             <h2 style={{ fontSize: "1.5rem", fontWeight: "700", color: "#f8fafc", lineHeight: 1.3, letterSpacing: "-0.02em" }}>
-              Every tenant gets scoped leads, follow-ups, and WhatsApp rems out of the box.
+              Leads come in from WhatsApp. You manage them here.
             </h2>
           </div>
           <p style={{ fontSize: "0.875rem", color: "#94a3b8", lineHeight: 1.75 }}>
-            Start with the seeded superadmin/admin/client trio, hook up each admin's WhatsApp/SMS
-            credentials, and let Prisma + NextAuth secure the session with role-aware middleware.
-            Use <code style={{ fontFamily: "monospace", fontSize: "0.8125rem", color: "#10b981", background: "rgba(16,185,129,0.1)", padding: "0.125rem 0.375rem", borderRadius: "0.25rem" }}>supabase</code> pooler
-            URLs in production without worrying about prepared statements or dropped connections.
+            Connect your WhatsApp Business account and incoming messages automatically 
+            become leads in your dashboard. Add notes, set follow-up reminders, 
+            and track every conversation until you close the deal.
           </p>
         </section>
 
