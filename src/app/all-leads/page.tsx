@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, LayoutDashboard, Filter } from "lucide-react";
 
@@ -13,6 +14,26 @@ export default async function AllLeadsPage() {
   if (user.role !== "SUPER_ADMIN") {
     redirect("/dashboard");
   }
+
+  // Fetch real leads from database with client and admin info
+  const leads = await prisma.lead.findMany({
+    select: {
+      id: true,
+      name: true,
+      phone: true,
+      status: true,
+      client: {
+        select: {
+          name: true,
+          admin: {
+            select: { name: true }
+          }
+        }
+      }
+    },
+    orderBy: { createdAt: "desc" },
+    take: 50 // Limit to recent 50 leads
+  });
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
@@ -38,7 +59,7 @@ export default async function AllLeadsPage() {
               <ArrowLeft size={18} />
             </Link>
             <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
-              All Leads (System-wide)
+              All Leads ({leads.length})
             </h1>
           </div>
           <button style={{
@@ -60,57 +81,57 @@ export default async function AllLeadsPage() {
         {/* Content */}
         <main style={{ flex: 1, padding: "1.5rem" }}>
           <div className="card" style={{ padding: "1.5rem" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {[
-                { name: "Priya Sharma", phone: "+91 98765 43210", status: "HOT", client: "Acme Corp", admin: "Admin User" },
-                { name: "Amit Verma", phone: "+91 87654 32109", status: "INTERESTED", client: "TechStart Inc", admin: "Sales Team Lead" },
-                { name: "Sunita Patel", phone: "+91 76543 21098", status: "FOLLOW_UP", client: "Global Solutions", admin: "Admin User" },
-                { name: "Rohit Gupta", phone: "+91 65432 10987", status: "NEW", client: "Acme Corp", admin: "Admin User" },
-                { name: "Kavita Singh", phone: "+91 54321 09876", status: "INTERESTED", client: "Local Business", admin: "Support Admin" },
-              ].map((lead, i) => (
-                <Link 
-                  key={i} 
-                  href={`/all-leads/${i + 1}`}
-                  style={{
-                    display: "flex", alignItems: "center", gap: "0.75rem",
-                    padding: "1rem",
-                    borderRadius: "0.5rem",
-                    background: "var(--surface-low)",
-                    textDecoration: "none",
-                    color: "inherit",
-                    transition: "background 0.15s",
-                  }}
-                >
-                  <div style={{
-                    width: "40px", height: "40px", borderRadius: "50%",
-                    background: "linear-gradient(135deg, #1e293b, #334155)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "0.875rem", fontWeight: "700", color: "#10b981",
-                  }}>
-                    {lead.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "0.9375rem", fontWeight: "600", color: "var(--text-primary)" }}>
-                      {lead.name}
-                    </div>
-                    <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{lead.phone}</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
+            {leads.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "3rem", color: "var(--text-muted)" }}>
+                No leads found
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                {leads.map((lead: any) => (
+                  <Link 
+                    key={lead.id} 
+                    href={`/all-leads/${lead.id}`}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "0.75rem",
+                      padding: "1rem",
+                      borderRadius: "0.5rem",
+                      background: "var(--surface-low)",
+                      textDecoration: "none",
+                      color: "inherit",
+                      transition: "background 0.15s",
+                    }}
+                  >
                     <div style={{
-                      fontSize: "0.75rem", fontWeight: "600",
-                      background: lead.status === "HOT" ? "#fee2e2" : lead.status === "NEW" ? "#dbeafe" : lead.status === "CONVERTED" ? "#d1fae5" : "#fef9c3",
-                      color: lead.status === "HOT" ? "#991b1b" : lead.status === "NEW" ? "#1e40af" : lead.status === "CONVERTED" ? "#065f46" : "#713f12",
-                      padding: "0.25rem 0.75rem", borderRadius: "9999px", display: "inline-block", marginBottom: "0.25rem",
+                      width: "40px", height: "40px", borderRadius: "50%",
+                      background: "linear-gradient(135deg, #1e293b, #334155)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.875rem", fontWeight: "700", color: "#10b981",
                     }}>
-                      {lead.status.replace("_", " ")}
+                      {lead.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2) || "LD"}
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      {lead.client} via {lead.admin}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: "0.9375rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                        {lead.name}
+                      </div>
+                      <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>{lead.phone}</div>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{
+                        fontSize: "0.75rem", fontWeight: "600",
+                        background: lead.status === "HOT" ? "#fee2e2" : lead.status === "NEW" ? "#dbeafe" : lead.status === "CONVERTED" ? "#d1fae5" : "#fef9c3",
+                        color: lead.status === "HOT" ? "#991b1b" : lead.status === "NEW" ? "#1e40af" : lead.status === "CONVERTED" ? "#065f46" : "#713f12",
+                        padding: "0.25rem 0.75rem", borderRadius: "9999px", display: "inline-block", marginBottom: "0.25rem",
+                      }}>
+                        {lead.status.replace("_", " ")}
+                      </div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                        {lead.client?.name || "Unknown"} via {lead.client?.admin?.name || "Unknown"}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </main>
       </div>
