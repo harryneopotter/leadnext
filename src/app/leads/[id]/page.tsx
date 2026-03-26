@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/sidebar";
-import { ArrowLeft, Phone, Mail, MapPin, Calendar, Clock, Edit, Plus } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Calendar, Clock, Edit, Plus, History, MessageCircle, CheckCircle, AlertCircle } from "lucide-react";
 
 export default async function LeadDetailPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -20,6 +20,10 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
       followUps: {
         orderBy: { scheduledAt: "desc" },
         take: 10,
+      },
+      activities: {
+        orderBy: { createdAt: "desc" },
+        take: 20,
       },
     },
   });
@@ -221,9 +225,69 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
                 </div>
               )}
             </div>
+
+            {/* Activity History Card */}
+            <div className="card" style={{ padding: "1.5rem" }}>
+              <h3 style={{ fontSize: "1rem", fontWeight: "600", color: "var(--text-primary)", margin: "0 0 1rem 0", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <History size={18} />
+                Activity History
+              </h3>
+              {lead.activities.length === 0 ? (
+                <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
+                  No activity recorded for this lead.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  {lead.activities.map((activity) => (
+                    <div
+                      key={activity.id}
+                      style={{
+                        display: "flex", alignItems: "flex-start", gap: "0.75rem",
+                        padding: "0.75rem",
+                        borderRadius: "0.375rem",
+                        background: "var(--surface-low)",
+                      }}
+                    >
+                      <div style={{ marginTop: "0.125rem" }}>
+                        {getActivityIcon(activity.action)}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: "0.875rem", color: "var(--text-primary)", fontWeight: "500" }}>
+                          {formatActivityText(activity.action)}
+                        </div>
+                        {activity.details && (
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
+                            {JSON.stringify(activity.details)}
+                          </div>
+                        )}
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
+                          {new Date(activity.createdAt).toLocaleString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>
     </div>
   );
+}
+
+function getActivityIcon(action: string) {
+  if (action.includes("WHATSAPP")) return <MessageCircle size={16} style={{ color: "#10b981" }} />;
+  if (action.includes("FOLLOW_UP")) return <Calendar size={16} style={{ color: "#3b82f6" }} />;
+  if (action.includes("STATUS") || action.includes("UPDATE")) return <Edit size={16} style={{ color: "#f59e0b" }} />;
+  if (action.includes("CREATE")) return <Plus size={16} style={{ color: "#8b5cf6" }} />;
+  if (action.includes("COMPLETE")) return <CheckCircle size={16} style={{ color: "#10b981" }} />;
+  return <AlertCircle size={16} style={{ color: "#6b7280" }} />;
+}
+
+function formatActivityText(action: string): string {
+  return action
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (l) => l.toUpperCase());
 }
