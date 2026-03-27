@@ -50,7 +50,7 @@ function EditLeadPageClient({
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f6fafe" }}>
       <Sidebar
         userRole={user.role}
         userName={user.name ?? undefined}
@@ -59,18 +59,18 @@ function EditLeadPageClient({
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, marginLeft: "240px" }}>
         <header style={{
-          background: "var(--surface-card)",
-          borderBottom: "1px solid var(--outline-ghost)",
+          background: "#ffffff",
+          borderBottom: "1px solid #e4e9ed",
           padding: "0 1.5rem",
           height: "56px",
           display: "flex",
           alignItems: "center",
           gap: "0.75rem",
         }}>
-          <Link href={`/leads/${params.id}`} style={{ color: "var(--text-muted)" }}>
+          <Link href={`/leads/${params.id}`} style={{ color: "#6d7a72" }}>
             <ArrowLeft size={18} />
           </Link>
-          <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
+          <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "#171c1f", margin: 0 }}>
             Edit Lead
           </h1>
         </header>
@@ -79,7 +79,7 @@ function EditLeadPageClient({
           <div className="card" style={{ padding: "1.5rem", maxWidth: "600px" }}>
             <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1rem" }}>
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   Name *
                 </label>
                 <input
@@ -90,17 +90,17 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   Phone *
                 </label>
                 <input
@@ -111,17 +111,17 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   Email
                 </label>
                 <input
@@ -131,17 +131,17 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   City
                 </label>
                 <input
@@ -151,17 +151,17 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   Status *
                 </label>
                 <select
@@ -171,11 +171,11 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                     cursor: "pointer",
                   }}
                 >
@@ -190,7 +190,7 @@ function EditLeadPageClient({
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "0.5rem" }}>
+                <label style={{ display: "block", fontSize: "0.8125rem", fontWeight: "600", color: "#171c1f", marginBottom: "0.5rem" }}>
                   Source *
                 </label>
                 <select
@@ -200,11 +200,11 @@ function EditLeadPageClient({
                   style={{
                     width: "100%",
                     padding: "0.625rem",
-                    background: "var(--surface-low)",
-                    border: "1px solid var(--outline-ghost)",
+                    background: "#f8fafc",
+                    border: "1px solid #e4e9ed",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
-                    color: "var(--text-primary)",
+                    color: "#171c1f",
                     cursor: "pointer",
                   }}
                 >
@@ -225,11 +225,11 @@ function EditLeadPageClient({
                       width: "100%",
                       padding: "0.625rem 1rem",
                       background: "transparent",
-                      border: "1px solid var(--outline-ghost)",
+                      border: "1px solid #e4e9ed",
                       borderRadius: "0.375rem",
                       fontSize: "0.875rem",
                       fontWeight: "600",
-                      color: "var(--text-secondary)",
+                      color: "#3d4a42",
                       cursor: "pointer",
                     }}
                   >
@@ -242,7 +242,7 @@ function EditLeadPageClient({
                   style={{
                     flex: 1,
                     padding: "0.625rem 1rem",
-                    background: "var(--emerald)",
+                    background: "linear-gradient(135deg, #006948, #00855d)",
                     border: "none",
                     borderRadius: "0.375rem",
                     fontSize: "0.875rem",
