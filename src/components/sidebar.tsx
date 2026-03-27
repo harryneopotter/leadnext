@@ -29,7 +29,7 @@ const adminNavItems: NavItem[] = [
   { label: "Leads",     href: "/leads",     icon: <Users size={18} /> },
   { label: "Follow-ups",href: "/followups", icon: <CalendarClock size={18} /> },
   { label: "Settings",  href: "/settings",  icon: <Settings size={18} /> },
-  { label: "Admin",     href: "/admin",     icon: <Shield size={18} /> },
+  { label: "Integrations", href: "/admin", icon: <Shield size={18} /> },
 ];
 
 const superAdminNavItems: NavItem[] = [

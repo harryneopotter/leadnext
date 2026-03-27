@@ -307,7 +307,9 @@ function AdminDashboard({ user, totalLeads }: { user: any, totalLeads: number })
                     Last 7 days (17 Mar – 23 Mar)
                   </p>
                 </div>
-                <span style={{ fontSize: "0.6875rem", color: "var(--emerald)", fontWeight: "600" }}>+18% ↑</span>
+                {totalLeads > 0 && (
+                  <span style={{ fontSize: "0.6875rem", color: "var(--emerald)", fontWeight: "600" }}>+18% ↑</span>
+                )}
               </div>
 
               {/* Bar chart */}
@@ -341,7 +343,17 @@ function AdminDashboard({ user, totalLeads }: { user: any, totalLeads: number })
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {followUps.map((f, i) => {
+                {followUps.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
+                    <p style={{ fontSize: "0.875rem", marginBottom: "0.5rem" }}>No upcoming follow-ups</p>
+                    <Link href="/leads/new">
+                      <button className="btn-emerald">
+                        <Plus size={16} style={{ marginRight: "0.5rem" }} />
+                        Schedule Follow-up
+                      </button>
+                    </Link>
+                  </div>
+                ) : followUps.map((f, i) => {
                   const colors = tagColors[f.tag] || tagColors.NEW;
                   return (
                     <div key={i} style={{

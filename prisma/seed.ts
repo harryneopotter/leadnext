@@ -37,30 +37,30 @@ async function main() {
   })
   console.log('Admin created:', admin.email)
 
-  // Create sample leads for the admin
+  // Create sample leads for admin
   const sampleLeads = [
     {
-      name: 'John Doe',
+      name: 'Rahul Sharma',
       phone: '9876543210',
-      email: 'john@example.com',
+      email: 'rahul@example.com',
       city: 'Delhi',
       source: 'MANUAL' as const,
       status: 'NEW' as const,
       remarks: 'Interested in our services',
     },
     {
-      name: 'Jane Smith',
+      name: 'Priya Patel',
       phone: '9876543211',
-      email: 'jane@example.com',
+      email: 'priya@example.com',
       city: 'Mumbai',
       source: 'FACEBOOK' as const,
       status: 'INTERESTED' as const,
       remarks: 'Follow up next week',
     },
     {
-      name: 'Bob Johnson',
+      name: 'Amit Singh',
       phone: '9876543212',
-      email: 'bob@example.com',
+      email: 'amit@example.com',
       city: 'Bangalore',
       source: 'WHATSAPP' as const,
       status: 'CONVERTED' as const,
@@ -94,3 +94,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
+}
