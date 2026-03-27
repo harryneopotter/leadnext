@@ -210,7 +210,7 @@ export function FollowupsClient({ user, followUps }: FollowupsClientProps) {
                 {followUps.length} follow-up{followUps.length !== 1 ? "s" : ""}
               </span>
             </div>
-            <Link href="/leads/new">
+            <Link href="/leads">
               <button style={{
                 background: "#10b981",
                 color: "white",
@@ -248,7 +248,7 @@ export function FollowupsClient({ user, followUps }: FollowupsClientProps) {
               <p style={{ fontSize: "0.875rem", color: "#637381", marginBottom: "2rem", maxWidth: "400px", margin: "0 auto 2rem" }}>
                 Start building your follow-up schedule by adding follow-ups to your leads.
               </p>
-              <Link href="/leads/new">
+              <Link href="/leads">
                 <button style={{
                   background: "#10b981",
                   color: "white",
