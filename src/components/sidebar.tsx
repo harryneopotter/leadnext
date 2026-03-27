@@ -167,7 +167,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
         .sidebar {
           width: 240px;
           min-width: 240px;
-          background: var(--sidebar-bg);
+          background: #0f172a;
           display: flex;
           flex-direction: column;
           min-height: 100vh;
@@ -206,7 +206,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
 
         .sidebar-title-sub {
           font-size: 0.625rem;
-          color: var(--emerald);
+          color: #10b981;
           text-transform: uppercase;
           letter-spacing: 0.08em;
           font-weight: 600;
@@ -228,7 +228,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
           border-radius: 0.375rem;
           font-size: 0.8125rem;
           font-weight: 500;
-          color: var(--text-on-sidebar);
+          color: #cbd5e1;
           text-decoration: none;
           transition: background 0.15s, color 0.15s;
           border-left: 3px solid transparent;
@@ -330,8 +330,8 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
           left: 1rem;
           right: 1rem;
           margin-bottom: 0.5rem;
-          background: var(--surface-card);
-          border: 1px solid var(--outline-ghost);
+          background: #1e293b;
+          border: 1px solid rgba(255,255,255,0.1);
           border-radius: 0.5rem;
           padding: 0.5rem;
           box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
@@ -382,7 +382,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
             align-items: center;
             justify-content: space-between;
             padding: 0.75rem 1rem;
-            background: var(--sidebar-bg);
+            background: #0f172a;
             border-bottom: 1px solid rgba(255,255,255,0.06);
             position: fixed;
             top: 0;
@@ -418,7 +418,7 @@ export function Sidebar({ userRole, userName, userEmail }: SidebarProps) {
           .mobile-menu-btn {
             background: transparent;
             border: none;
-            color: var(--text-on-sidebar);
+            color: #cbd5e1;
             cursor: pointer;
             padding: 0.5rem;
             display: flex;
