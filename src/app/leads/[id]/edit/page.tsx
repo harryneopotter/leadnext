@@ -290,4 +290,4 @@ async function EditLeadPageServer({ params }: { params: { id: string } }) {
   return <EditLeadPageClient params={params} lead={lead} user={user} />;
 }
 
-export { EditLeadPageServer as default };
+export default EditLeadPageServer;

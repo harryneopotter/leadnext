@@ -231,4 +231,4 @@ async function AddFollowUpPageServer({ params }: { params: { id: string } }) {
   return <AddFollowUpPageClient params={params} lead={lead} user={user} />;
 }
 
-export { AddFollowUpPageServer as default };
+export default AddFollowUpPageServer;
