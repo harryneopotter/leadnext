@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Plus, Filter, Search, X } from "lucide-react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 interface Lead {
   id: string;
@@ -48,23 +51,23 @@ function LeadsPageClient({ leads, user }: { leads: Lead[]; user: any }) {
   const statusColors: Record<string, { bg: string; text: string }> = {
     NEW: { bg: "#dbeafe", text: "#1e40af" },
     HOT: { bg: "#fee2e2", text: "#991b1b" },
-    INTERESTED: { bg: "#fef9c3", text: "#713f12" },
-    NOT_INTERESTED: { bg: "#fecaca", text: "#7f1d1d" },
-    NOT_PICKED: { bg: "#fef3c7", text: "#92400e" },
     CONVERTED: { bg: "#d1fae5", text: "#065f46" },
+    INTERESTED: { bg: "#fef9c3", text: "#713f12" },
     FOLLOW_UP: { bg: "#ede9fe", text: "#5b21b6" },
   };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--surface)" }}>
+      {/* ── Sidebar ── */}
       <Sidebar
         userRole={user.role}
         userName={user.name ?? undefined}
         userEmail={user.email ?? undefined}
       />
 
+      {/* ── Main area ── */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, marginLeft: "240px" }}>
-        {/* Header */}
+        {/* Top bar */}
         <header style={{
           background: "var(--surface-card)",
           borderBottom: "1px solid var(--outline-ghost)",
@@ -74,45 +77,29 @@ function LeadsPageClient({ leads, user }: { leads: Lead[]; user: any }) {
           alignItems: "center",
           justifyContent: "space-between",
           gap: "1rem",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            <Link href="/dashboard" style={{ color: "var(--text-muted)" }}>
-              <ArrowLeft size={18} />
-            </Link>
+          <div>
             <h1 style={{ fontSize: "0.9375rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
-              My Leads ({filteredLeads.length})
+              Leads
             </h1>
+            <p style={{ fontSize: "0.6875rem", color: "var(--text-muted)", margin: 0 }}>
+              {filteredLeads.length} lead{filteredLeads.length !== 1 ? "s" : ""}
+            </p>
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button 
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button
               onClick={() => setShowFilters(!showFilters)}
-              style={{
-                display: "flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                background: showFilters ? "var(--emerald)" : "transparent",
-                color: showFilters ? "white" : "var(--text-secondary)",
-                border: "1px solid var(--outline-ghost)",
-                borderRadius: "0.375rem",
-                fontSize: "0.8125rem",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
+              className="btn-outline"
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
               <Filter size={16} />
-              Filter
+              Filters
             </button>
             <Link href="/leads/new">
-              <button style={{
-                display: "flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                background: "var(--emerald)",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                fontSize: "0.8125rem",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}>
+              <button className="btn-emerald" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <Plus size={16} />
                 Add Lead
               </button>
@@ -120,140 +107,143 @@ function LeadsPageClient({ leads, user }: { leads: Lead[]; user: any }) {
           </div>
         </header>
 
-        {/* Filters */}
-        {showFilters && (
-          <div style={{
-            background: "var(--surface-card)",
-            borderBottom: "1px solid var(--outline-ghost)",
-            padding: "1rem 1.5rem",
-            display: "flex",
-            gap: "1rem",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: 1, minWidth: "200px" }}>
-              <Search size={16} style={{ color: "var(--text-muted)" }} />
-              <input
-                type="text"
-                placeholder="Search leads..."
-                value={searchQuery}
-                onChange={(e) => updateFilter("q", e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: "0.5rem",
-                  background: "var(--surface-low)",
-                  border: "1px solid var(--outline-ghost)",
-                  borderRadius: "0.375rem",
-                  fontSize: "0.875rem",
-                  color: "var(--text-primary)",
-                }}
-              />
-              {searchQuery && (
-                <button onClick={() => updateFilter("q", "")} style={{ background: "none", border: "none", cursor: "pointer" }}>
-                  <X size={16} style={{ color: "var(--text-muted)" }} />
+        {/* Page content */}
+        <main style={{ flex: 1, padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {/* Filters */}
+          {showFilters && (
+            <div className="card" style={{ padding: "1rem", display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: 1, minWidth: "200px" }}>
+                <Search size={16} style={{ color: "var(--text-muted)" }} />
+                <input
+                  type="text"
+                  placeholder="Search leads..."
+                  value={searchQuery}
+                  onChange={(e) => updateFilter("q", e.target.value)}
+                  className="field-input"
+                  style={{ flex: 1 }}
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => updateFilter("status", e.target.value)}
+                className="field-input"
+                style={{ width: "150px" }}
+              >
+                <option value="">All Status</option>
+                <option value="NEW">New</option>
+                <option value="HOT">Hot</option>
+                <option value="INTERESTED">Interested</option>
+                <option value="FOLLOW_UP">Follow Up</option>
+                <option value="CONVERTED">Converted</option>
+              </select>
+              {(statusFilter || searchQuery) && (
+                <button
+                  onClick={() => {
+                    updateFilter("status", "");
+                    updateFilter("q", "");
+                  }}
+                  className="btn-outline"
+                  style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+                >
+                  <X size={16} />
+                  Clear
                 </button>
               )}
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => updateFilter("status", e.target.value)}
-              style={{
-                padding: "0.5rem 1rem",
-                background: "var(--surface-low)",
-                border: "1px solid var(--outline-ghost)",
-                borderRadius: "0.375rem",
-                fontSize: "0.875rem",
-                color: "var(--text-primary)",
-                cursor: "pointer",
-              }}
-            >
-              <option value="">All Status</option>
-              <option value="NEW">New</option>
-              <option value="HOT">Hot</option>
-              <option value="INTERESTED">Interested</option>
-              <option value="NOT_INTERESTED">Not Interested</option>
-              <option value="NOT_PICKED">Not Picked</option>
-              <option value="CONVERTED">Converted</option>
-              <option value="FOLLOW_UP">Follow Up</option>
-            </select>
-            {(statusFilter || searchQuery) && (
-              <button
-                onClick={() => router.push("/leads")}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "transparent",
-                  border: "1px solid var(--outline-ghost)",
-                  borderRadius: "0.375rem",
-                  fontSize: "0.8125rem",
-                  color: "var(--text-muted)",
-                  cursor: "pointer",
-                }}
-              >
-                Clear All
-              </button>
-            )}
-          </div>
-        )}
+          )}
 
-        {/* Content */}
-        <main style={{ flex: 1, padding: "1.5rem" }}>
-          <div className="card" style={{ padding: "1.5rem" }}>
-            {filteredLeads.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "3rem", color: "var(--text-muted)" }}>
-                <p>{leads.length === 0 ? "No leads yet." : "No leads match your filters."}</p>
-                <p style={{ fontSize: "0.875rem", marginTop: "0.5rem" }}>
-                  {leads.length === 0 ? 'Click "Add Lead" to create your first lead.' : "Try adjusting your search or filters."}
-                </p>
+          {/* Leads list */}
+          {filteredLeads.length === 0 ? (
+            <div className="card" style={{ padding: "3rem", textAlign: "center" }}>
+              <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginBottom: "1rem" }}>
+                {leads.length === 0 ? "No leads yet. Add your first lead to get started." : "No leads match your filters."}
+              </p>
+              {leads.length === 0 && (
+                <Link href="/leads/new">
+                  <button className="btn-emerald">
+                    <Plus size={16} style={{ marginRight: "0.5rem" }} />
+                    Add Lead
+                  </button>
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="card" style={{ padding: "1rem" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {filteredLeads.map((lead) => {
+                  const colors = statusColors[lead.status] || statusColors.NEW;
+                  return (
+                    <Link
+                      key={lead.id}
+                      href={`/leads/${lead.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.75rem",
+                          padding: "0.75rem",
+                          borderRadius: "0.375rem",
+                          background: "var(--surface-low)",
+                          transition: "background 0.15s",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "var(--surface-container)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "var(--surface-low)";
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            background: "linear-gradient(135deg, #1e293b, #334155)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "0.75rem",
+                            fontWeight: "700",
+                            color: "#10b981",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {lead.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: "0.875rem", fontWeight: "600", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {lead.name}
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.125rem" }}>
+                            <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{lead.phone}</span>
+                            {lead.email && (
+                              <>
+                                <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>•</span>
+                                <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{lead.email}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{
+                          fontSize: "0.625rem",
+                          fontWeight: "600",
+                          background: colors.bg,
+                          color: colors.text,
+                          padding: "0.125rem 0.5rem",
+                          borderRadius: "9999px",
+                        }}>
+                          {lead.status.replace("_", " ")}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                {filteredLeads.map((lead) => (
-                  <Link
-                    key={lead.id}
-                    href={`/leads/${lead.id}`}
-                    style={{
-                      display: "flex", alignItems: "center", gap: "0.75rem",
-                      padding: "1rem",
-                      borderRadius: "0.5rem",
-                      background: "var(--surface-low)",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <div style={{
-                      width: "40px", height: "40px", borderRadius: "50%",
-                      background: "linear-gradient(135deg, #1e293b, #334155)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "0.875rem", fontWeight: "700", color: "#10b981",
-                    }}>
-                      {lead.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2) || "LD"}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: "0.9375rem", fontWeight: "600", color: "var(--text-primary)" }}>
-                        {lead.name}
-                      </div>
-                      <div style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>
-                        {lead.phone} {lead.city && `• ${lead.city}`}
-                      </div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{
-                        fontSize: "0.75rem", fontWeight: "600",
-                        background: statusColors[lead.status]?.bg || "#e2e8f0",
-                        color: statusColors[lead.status]?.text || "#475569",
-                        padding: "0.25rem 0.75rem", borderRadius: "9999px", display: "inline-block", marginBottom: "0.25rem",
-                      }}>
-                        {lead.status.replace("_", " ")}
-                      </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        {lead.source}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
@@ -261,10 +251,6 @@ function LeadsPageClient({ leads, user }: { leads: Lead[]; user: any }) {
 }
 
 // Server component wrapper
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-
 async function LeadsPageServer({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
