@@ -180,11 +180,12 @@ export function LeadsPageClient({ leads, user }: { leads: Lead[]; user: any }) {
         {/* Page content */}
         <main className="main-content" style={{ 
           flex: 1, 
-          padding: "3rem 1.5rem", 
+          padding: "3rem 2rem", 
           display: "flex", 
           flexDirection: "column", 
           gap: "3rem",
-          maxWidth: "1280px",
+          width: "100%",
+          maxWidth: "1400px",
           margin: "0 auto"
         }}>
           {/* Hero Header Section */}
