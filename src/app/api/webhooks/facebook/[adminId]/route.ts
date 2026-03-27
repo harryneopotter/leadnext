@@ -6,8 +6,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
+  const { adminId } = await params;
   const { searchParams } = new URL(request.url);
   const mode = searchParams.get("hub.mode");
   const challenge = searchParams.get("hub.challenge");
@@ -20,7 +21,7 @@ export async function GET(
   // Verify admin exists and is active
   const admin = await prisma.user.findFirst({
     where: { 
-      id: params.adminId, 
+      id: adminId, 
       role: "ADMIN",
       status: "ACTIVE" 
     },
@@ -41,13 +42,14 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
   try {
+    const { adminId } = await params;
     // 1. Verify admin exists and is active
     const admin = await prisma.user.findFirst({
       where: { 
-        id: params.adminId, 
+        id: adminId, 
         role: "ADMIN",
         status: "ACTIVE" 
       },
@@ -79,7 +81,7 @@ export async function POST(
     const lead = await prisma.lead.upsert({
       where: {
         adminId_phone: {
-          adminId: params.adminId,
+          adminId: adminId,
           phone: normalizedPhone,
         },
       },
@@ -91,7 +93,7 @@ export async function POST(
         updatedAt: new Date(),
       },
       create: {
-        adminId: params.adminId,
+        adminId: adminId,
         name: name || "Facebook Lead",
         phone: normalizedPhone,
         email: email || null,
@@ -104,7 +106,7 @@ export async function POST(
     // 4. Log activity
     await prisma.activityLog.create({
       data: {
-        userId: params.adminId,
+        userId: adminId,
         leadId: lead.id,
         action: "FACEBOOK_LEAD_CAPTURED",
         details: { 

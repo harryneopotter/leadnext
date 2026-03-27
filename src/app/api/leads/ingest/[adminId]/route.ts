@@ -7,13 +7,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
   try {
+    const { adminId } = await params;
     // 1. Validate adminId from URL
     const admin = await prisma.user.findFirst({
       where: { 
-        id: params.adminId, 
+        id: adminId, 
         role: "ADMIN",
         status: "ACTIVE" 
       },
@@ -53,7 +54,7 @@ export async function POST(
     const lead = await prisma.lead.upsert({
       where: {
         adminId_phone: {
-          adminId: params.adminId,
+          adminId: adminId,
           phone: normalizedPhone,
         },
       },
@@ -64,7 +65,7 @@ export async function POST(
         updatedAt: new Date(),
       },
       create: {
-        adminId: params.adminId,
+        adminId: adminId,
         name: data.name,
         phone: normalizedPhone,
         email: data.email || null,
@@ -77,7 +78,7 @@ export async function POST(
     // 4. Log activity
     await prisma.activityLog.create({
       data: {
-        userId: params.adminId,
+        userId: adminId,
         leadId: lead.id,
         action: "LEAD_INGESTED",
         details: { 
@@ -104,11 +105,12 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
+  const { adminId } = await params;
   return NextResponse.json({
     message: "Lead ingestion endpoint",
-    adminId: params.adminId,
+    adminId: adminId,
     usage: "POST with {name, phone, email?, city?, source?}",
     note: "adminId is taken from URL, not body",
   });

@@ -7,8 +7,9 @@ import { decrypt } from "@/lib/crypto";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
+  const { adminId } = await params;
   const { searchParams } = new URL(request.url);
   const mode = searchParams.get("hub.mode");
   const token = searchParams.get("hub.verify_token");
@@ -20,7 +21,7 @@ export async function GET(
 
   // Look up this admin's webhook secret
   const settings = await prisma.adminSettings.findUnique({
-    where: { adminId: params.adminId },
+    where: { adminId: adminId },
     select: { whatsappWebhookSecret: true }
   });
 
@@ -43,12 +44,13 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { adminId: string } }
+  { params }: { params: Promise<{ adminId: string }> }
 ) {
   try {
-    // 1. Look up admin settings by params.adminId
+    const { adminId } = await params;
+    // 1. Look up admin settings by adminId
     const settings = await prisma.adminSettings.findUnique({
-      where: { adminId: params.adminId },
+      where: { adminId: adminId },
       select: {
         whatsappToken: true,
         whatsappPhoneNumberId: true,
@@ -131,7 +133,7 @@ export async function POST(
     const lead = await prisma.lead.upsert({
       where: {
         adminId_phone: {
-          adminId: params.adminId,
+          adminId: adminId,
           phone: phoneDigits,
         },
       },
@@ -140,7 +142,7 @@ export async function POST(
         updatedAt: new Date(),
       },
       create: {
-        adminId: params.adminId,
+        adminId: adminId,
         name: "WhatsApp User",
         phone: phoneDigits,
         source: "WHATSAPP",
@@ -151,7 +153,7 @@ export async function POST(
     // 6. Write ActivityLog
     await prisma.activityLog.create({
       data: {
-        userId: params.adminId,
+        userId: adminId,
         leadId: lead.id,
         action: "WHATSAPP_LEAD_CAPTURED",
         details: { message: text, status },
