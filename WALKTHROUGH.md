@@ -72,8 +72,9 @@ DIRECT_URL="postgresql://postgres:password@host:5432/db"
 # Auth
 AUTH_SECRET="your-random-secret-min-32-chars"
 
-# Encryption (for WhatsApp tokens, SMTP passwords)
-ENCRYPTION_KEY="your-32-char-encryption-key"
+# Encryption (32 bytes hex, 64 characters)
+# Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+ENCRYPTION_KEY="a1b2c3d4e5f6...64-char-hex-string"
 ```
 
 ### 2. Database Setup
@@ -89,8 +90,10 @@ npx prisma db seed
 ```
 
 **Default credentials after seed:**
-- **SUPER_ADMIN:** superadmin@leadcrm.com / SuperAdmin123!
-- **ADMIN:** admin@leadcrm.com / Admin123!
+- **SUPER_ADMIN:** superadmin@leadcrm.com / SuperAdmin@2024!
+- **ADMIN:** admin@leadcrm.com / Admin@2024!
+
+**⚠️ IMPORTANT:** Change these defaults immediately after first login!
 
 ### 3. Deploy to Vercel
 ```bash
@@ -220,9 +223,11 @@ Go to `/admin` → **WhatsApp Business API** section:
 #### 5. Configure Meta Webhook
 Back in Meta Developer Dashboard:
 - WhatsApp → Configuration → Webhooks
-- **Callback URL:** `https://your-domain.com/api/webhooks/whatsapp`
+- **Callback URL:** `https://your-domain.com/api/webhooks/whatsapp/{your_admin_id}`
 - **Verify Token:** Same as above
 - Subscribe to `messages` field
+
+**Note:** Each admin has their own webhook URL with their adminId
 
 ### How It Works
 
@@ -256,7 +261,7 @@ Capture leads directly from Facebook Lead Ads. When someone submits your lead fo
 Use the lead ingestion endpoint from your Facebook Ads webhook:
 
 ```
-POST https://your-domain.com/api/leads/ingest
+POST https://your-domain.com/api/leads/ingest/{your_admin_id}
 Content-Type: application/json
 
 {
@@ -264,16 +269,19 @@ Content-Type: application/json
   "phone": "9876543210",
   "email": "john@example.com",
   "city": "Mumbai",
-  "source": "FACEBOOK",
-  "adminId": "your_admin_id_here"
+  "source": "FACEBOOK"
 }
 ```
 
+**Note:** adminId is now in the URL, not the body
+
 #### Option 2: Meta Webhook
 1. Facebook Business Manager → Lead Access → Webhooks
-2. Add URL: `https://your-domain.com/api/webhooks/facebook`
+2. Add URL: `https://your-domain.com/api/webhooks/facebook/{your_admin_id}`
 3. Subscribe to `leadgen_id` field
 4. Verify webhook
+
+**Note:** Each admin has their own webhook URL with their adminId
 
 ### Lead Data Mapping
 | Facebook Field | CRM Field |
@@ -369,7 +377,7 @@ Content-Type: application/json
 
 #### Public Lead Ingestion
 ```
-POST /api/leads/ingest
+POST /api/leads/ingest/{adminId}
 Content-Type: application/json
 
 {
@@ -377,10 +385,11 @@ Content-Type: application/json
   "phone": "9876543210",
   "email": "optional@email.com",
   "city": "Optional City",
-  "source": "FACEBOOK",
-  "adminId": "admin_uuid"
+  "source": "FACEBOOK"
 }
 ```
+
+**Note:** adminId is required in URL path, not in request body
 
 ### Admin Settings
 
@@ -406,14 +415,14 @@ Content-Type: application/json
 
 #### WhatsApp Webhook
 ```
-GET /api/webhooks/whatsapp?hub.mode=subscribe&hub.verify_token=xxx&hub.challenge=xxx
-POST /api/webhooks/whatsapp
+GET /api/webhooks/whatsapp/{adminId}?hub.mode=subscribe&hub.verify_token=xxx&hub.challenge=xxx
+POST /api/webhooks/whatsapp/{adminId}
 ```
 
 #### Facebook Lead Webhook
 ```
-GET /api/webhooks/facebook?hub.mode=subscribe&hub.challenge=xxx
-POST /api/webhooks/facebook
+GET /api/webhooks/facebook/{adminId}?hub.mode=subscribe&hub.challenge=xxx
+POST /api/webhooks/facebook/{adminId}
 ```
 
 ---

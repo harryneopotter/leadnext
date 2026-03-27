@@ -65,4 +65,71 @@
 
 ---
 
+## 2026-03-27 - Webhook Security & Mobile Responsiveness
+
+### Tasks Completed
+
+1. **Fix 1: WhatsApp Webhook Per-Admin Route**
+   - **What:** Moved WhatsApp webhook to per-admin route `/api/webhooks/whatsapp/[adminId]`
+   - **Why:** Each admin needs separate webhook for routing and security
+   - **Where:** `src/app/api/webhooks/whatsapp/[adminId]/route.ts`
+
+2. **Fix 2: Facebook Webhook Per-Admin Route**
+   - **What:** Created Facebook Lead Ads webhook at `/api/webhooks/facebook/[adminId]`
+   - **Why:** Each admin needs separate webhook for routing and security
+   - **Where:** `src/app/api/webhooks/facebook/[adminId]/route.ts`
+
+3. **Fix 3: Lead Ingest Per-Admin Route**
+   - **What:** Created lead ingestion API at `/api/leads/ingest/[adminId]`, removed adminId from body
+   - **Why:** Security - adminId should be in URL, not body
+   - **Where:** `src/app/api/leads/ingest/[adminId]/route.ts`
+
+4. **Fix 4: Updated WALKTHROUGH.md Webhook URLs**
+   - **What:** Updated all webhook URLs to include adminId parameter
+   - **Why:** Documentation must reflect new per-admin routing
+   - **Where:** `WALKTHROUGH.md`
+
+5. **Fix 5: Updated Seed Credentials**
+   - **What:** Changed default passwords to stronger format
+   - **Why:** Better security defaults
+   - **Where:** `prisma/seed.ts`
+
+6. **Fix 6: ENCRYPTION_KEY Documentation**
+   - **What:** Added proper ENCRYPTION_KEY docs in walkthrough
+   - **Why:** Users need to know how to generate 32-byte hex key
+   - **Where:** `WALKTHROUGH.md`
+
+7. **Delete Old Webhook Routes**
+   - **What:** Removed old webhook routes without adminId
+   - **Why:** Prevent confusion and maintain security
+   - **Where:** Deleted `src/app/api/webhooks/whatsapp/route.ts`, `src/app/api/webhooks/facebook/route.ts`, `src/app/api/leads/ingest/route.ts`
+
+8. **Create Favicon Matching Logo**
+   - **What:** Created emerald-green SVG favicon matching LeadCRM logo
+   - **Why:** Professional branding and browser tab icon
+   - **Where:** `public/favicon.svg`, `src/app/layout.tsx`
+
+9. **Make UI Mobile Responsive**
+   - **What:** Added hamburger menu, mobile header, responsive sidebar
+   - **Why:** Users need to access CRM on mobile devices
+   - **Where:** `src/components/sidebar.tsx` - added mobile overlay, hamburger menu, slide-out navigation
+
+### Updated Credentials
+- **Super Admin:** superadmin@leadcrm.com / SuperAdmin@2024!
+- **Admin:** admin@leadcrm.com / Admin@2024!
+
+### Webhook URLs (Per-Admin)
+- WhatsApp: `/api/webhooks/whatsapp/{adminId}`
+- Facebook: `/api/webhooks/facebook/{adminId}`
+- Lead Ingest: `/api/leads/ingest/{adminId}`
+
+### Current Status
+- All 6 critical fixes from fixes.md completed
+- Mobile responsiveness implemented
+- Favicon created and integrated
+- Old webhook routes cleaned up
+- Documentation updated
+
+---
+
 *Auto-generated from task history*

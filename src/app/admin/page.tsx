@@ -170,7 +170,7 @@ function AdminPageClient({ user, settings }: AdminPageProps) {
                       }}
                     />
                     <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                      Webhook URL: <code style={{ background: "var(--surface-low)", padding: "0.125rem 0.25rem", borderRadius: "0.25rem" }}>/api/webhooks/whatsapp</code>
+                      Webhook URL: <code style={{ background: "var(--surface-low)", padding: "0.125rem 0.25rem", borderRadius: "0.25rem" }}>/api/webhooks/whatsapp/{user.id}</code>
                     </p>
                   </div>
 
@@ -344,12 +344,12 @@ function AdminPageClient({ user, settings }: AdminPageProps) {
                   </p>
                   <ol style={{ margin: "0 0 1rem 1.25rem", padding: 0 }}>
                     <li>Go to Facebook Business Manager → Lead Access → Webhooks</li>
-                    <li>Add webhook URL: <code style={{ background: "var(--surface-low)", padding: "0.125rem 0.375rem", borderRadius: "0.25rem" }}>/api/webhooks/facebook</code></li>
+                    <li>Add webhook URL: <code style={{ background: "var(--surface-low)", padding: "0.125rem 0.375rem", borderRadius: "0.25rem" }}>/api/webhooks/facebook/{user.id}</code></li>
                     <li>Subscribe to <code>leadgen_id</code> field</li>
                     <li>Verify the webhook</li>
                   </ol>
                   <p style={{ marginBottom: "1rem" }}>
-                    Or use the lead ingestion API directly:
+                    Or use the lead ingestion API directly (adminId in URL, not body):
                   </p>
                   <pre style={{ 
                     background: "var(--surface-low)", 
@@ -359,12 +359,12 @@ function AdminPageClient({ user, settings }: AdminPageProps) {
                     overflow: "auto",
                     color: "var(--text-primary)"
                   }}>
-                    POST /api/leads/ingest
+                    POST /api/leads/ingest/{user.id}
                     Content-Type: application/json
                     
                     {'{'}"name": "John Doe", "phone": "9876543210",
                     "email": "john@example.com", "city": "Mumbai",
-                    "source": "FACEBOOK", "adminId": "your_admin_id"{'}'}
+                    "source": "FACEBOOK"{'}'}
                   </pre>
                 </div>
               </div>

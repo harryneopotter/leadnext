@@ -7,8 +7,8 @@ dotenv.config()
 const prisma = new PrismaClient({})
 
 async function main() {
-  // Create Super Admin
-  const superAdminPassword = await bcrypt.hash('SuperAdmin123!', 12)
+  // Create Super Admin - CHANGE THESE DEFAULTS IN PRODUCTION
+  const superAdminPassword = await bcrypt.hash('SuperAdmin@2024!', 12)
   const superAdmin = await prisma.user.upsert({
     where: { email: 'superadmin@leadcrm.com' },
     update: { password: superAdminPassword },
@@ -22,8 +22,8 @@ async function main() {
   })
   console.log('Super Admin created:', superAdmin.email)
 
-  // Create Admin
-  const adminPassword = await bcrypt.hash('Admin123!', 12)
+  // Create Admin - CHANGE THESE DEFAULTS IN PRODUCTION
+  const adminPassword = await bcrypt.hash('Admin@2024!', 12)
   const admin = await prisma.user.upsert({
     where: { email: 'admin@leadcrm.com' },
     update: { password: adminPassword },
