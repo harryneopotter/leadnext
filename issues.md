@@ -51,3 +51,23 @@
 
 **Why this works**
 - Users now see actual state instead of placeholders, and the pages no longer imply functionality that does not exist yet.
+
+## 2026-03-28 - Settings notification note should be code-only, not user-facing
+
+**Issue**
+- The notification TODO on the Settings page was visible in the UI, but the feedback requested it as a developer-only code comment.
+
+**What I changed**
+- Removed the visible explanatory copy and left only the inline TODO comment in the code.
+
+**Result**
+- The Settings page no longer shows a fake placeholder message to users.
+
+## 2026-03-28 - Back-arrow routes checked
+
+**Check**
+- Reviewed the explicit back-arrow links on Settings, Admin, Leads, Follow-ups, Lead Detail, Edit Lead, and Add Follow-up pages.
+
+**Result**
+- No broken back-arrow route was found in the current code.
+- If you want a different destination behavior for any specific page, that is a UX choice rather than a broken link.

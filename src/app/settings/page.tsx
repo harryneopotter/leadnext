@@ -119,9 +119,6 @@ export default async function SettingsPage() {
                 <h2 style={{ fontSize: "1rem", fontWeight: "600" }}>Notifications</h2>
               </div>
               {/* TODO: Bring notification preferences back in V2 with persisted user settings. */}
-              <div style={{ padding: "0.75rem", background: "var(--surface-low)", borderRadius: "0.375rem", color: "var(--text-muted)", fontSize: "0.875rem" }}>
-                Notification preferences are temporarily hidden for V1. They will return in V2 with saved settings.
-              </div>
             </div>
 
           </div>

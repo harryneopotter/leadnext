@@ -274,3 +274,24 @@
 - UI now reflects actual integration config more honestly.
 - Notification settings are intentionally hidden until V2.
 - Next step is to verify the updated pages after the next redeploy.
+
+---
+
+## 2026-03-28 - Settings Note Cleanup and Back-Arrow Check
+
+### Tasks Completed
+
+1. **Removed the visible notification placeholder from Settings**
+   - **What:** Deleted the user-facing V2 note and kept only the code comment
+   - **Why:** The feedback requested a developer-only TODO, not a visible message
+   - **Where:** `src/app/settings/page.tsx`
+
+2. **Checked back-arrow targets across the app**
+   - **What:** Reviewed the explicit back-link destinations on Settings, Admin, Leads, Follow-ups, Lead Detail, Edit Lead, and Add Follow-up pages
+   - **Why:** Confirm whether any arrow was wired to the wrong page
+   - **Where:** `src/app/settings/page.tsx`, `src/app/admin/admin-client.tsx`, `src/app/leads/leads-client.tsx`, `src/app/followups/followups-client.tsx`, `src/app/leads/[id]/page.tsx`, `src/app/leads/[id]/edit/edit-lead-client.tsx`, `src/app/leads/[id]/followup/add-followup-client.tsx`
+
+### Current Status
+- The Settings page no longer shows a fake notification placeholder.
+- No broken back-arrow route was found in the current code.
+- If you want a different destination for a specific back arrow, that should be changed as a deliberate UX decision.
