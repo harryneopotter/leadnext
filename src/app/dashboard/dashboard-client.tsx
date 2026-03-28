@@ -7,7 +7,7 @@ import {
   TrendingUp, 
   UserCheck, 
   UserPlus, 
-  Bell, 
+  Bell,
   Calendar,
   Plus,
   Search,
@@ -120,17 +120,6 @@ export function DashboardClient({ user, totalLeads }: DashboardClientProps) {
                 }}
               />
             </div>
-            <button style={{
-              background: "none",
-              border: "none",
-              color: "#454d55",
-              cursor: "pointer",
-              padding: "0.5rem",
-              borderRadius: "50%",
-              transition: "all 0.2s",
-            }}>
-              <Bell size={20} />
-            </button>
             <div style={{
               width: "40px",
               height: "40px",

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
-import { ArrowLeft, Plus, Filter, Search, X, Users, Bell, Mail, Phone, ChevronRight } from "lucide-react";
+import { ArrowLeft, Plus, Filter, Search, X, Users, Mail, Phone, ChevronRight } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
 interface Lead {
@@ -134,28 +134,6 @@ export function LeadsPageClient({
                 }}
               />
             </div>
-            <button style={{
-              background: "none",
-              border: "none",
-              color: "#454d55",
-              cursor: "pointer",
-              padding: "0.5rem",
-              borderRadius: "50%",
-              transition: "all 0.2s",
-              position: "relative",
-            }}>
-              <Bell size={20} />
-              <span style={{
-                position: "absolute",
-                top: "8px",
-                right: "8px",
-                width: "8px",
-                height: "8px",
-                background: "#ef4444",
-                borderRadius: "50%",
-                border: "2px solid #f6fafe",
-              }}></span>
-            </button>
             <div style={{
               width: "40px",
               height: "40px",

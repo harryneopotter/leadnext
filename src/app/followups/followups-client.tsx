@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
-import { ArrowLeft, Calendar, Clock, Phone, Bell, Plus, Search } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Phone, Plus, Search } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
 interface FollowupsClientProps {
@@ -99,17 +99,6 @@ export function FollowupsClient({ user, followUps }: FollowupsClientProps) {
                 }}
               />
             </div>
-            <button style={{
-              background: "none",
-              border: "none",
-              color: "#454d55",
-              cursor: "pointer",
-              padding: "0.5rem",
-              borderRadius: "50%",
-              transition: "all 0.2s",
-            }}>
-              <Bell size={20} />
-            </button>
             <div style={{
               width: "40px",
               height: "40px",

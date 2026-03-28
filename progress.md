@@ -295,3 +295,57 @@
 - The Settings page no longer shows a fake notification placeholder.
 - No broken back-arrow route was found in the current code.
 - If you want a different destination for a specific back arrow, that should be changed as a deliberate UX decision.
+
+---
+
+## 2026-03-28 - Removed Dead Notification Icons
+
+### Tasks Completed
+
+1. **Removed the Leads page notification bell**
+   - **What:** Deleted the decorative bell icon from the top-right of the Leads page
+   - **Why:** It had no behavior and looked like a control that should do something
+   - **Where:** `src/app/leads/leads-client.tsx`
+
+2. **Removed the Dashboard notification bell**
+   - **What:** Deleted the decorative bell icon from the top-right of the Dashboard page
+   - **Why:** Same issue as the Leads page: it was visually interactive but non-functional
+   - **Where:** `src/app/dashboard/dashboard-client.tsx`
+
+### Current Status
+- The app no longer shows dead notification icons in the top-right of the main Leads and Dashboard headers.
+- Next step is to redeploy and confirm the headers render cleanly without the icons.
+
+---
+
+## 2026-03-28 - Hide Dead Notification Icons
+
+### Tasks Completed
+
+1. **Removed the Leads page notification bell**
+   - **What:** Deleted the non-functional notification bell from the top-right of the Leads page
+   - **Why:** It looked interactive but had no behavior, which was misleading
+   - **Where:** `src/app/leads/leads-client.tsx`
+
+2. **Removed the Dashboard header notification bell**
+   - **What:** Deleted the non-functional notification bell from the Dashboard header
+   - **Why:** The same dead-control issue existed there too
+   - **Where:** `src/app/dashboard/dashboard-client.tsx`
+
+### Current Status
+- The main navigation headers are cleaner and no longer show dead notification buttons.
+- The dashboard still uses a bell icon in the statistics card, where it represents pending follow-ups rather than a clickable control.
+
+---
+
+## 2026-03-28 - Removed Follow-Ups Header Bell
+
+### Tasks Completed
+
+1. **Removed the Follow-ups page notification bell**
+   - **What:** Deleted the decorative bell icon from the top-right of the Follow-ups page
+   - **Why:** It had no behavior and looked like a notifications control
+   - **Where:** `src/app/followups/followups-client.tsx`
+
+### Current Status
+- The follow-ups header now shows only the search input and user avatar, which matches the implemented behavior.

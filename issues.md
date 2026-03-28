@@ -71,3 +71,26 @@
 **Result**
 - No broken back-arrow route was found in the current code.
 - If you want a different destination behavior for any specific page, that is a UX choice rather than a broken link.
+
+## 2026-03-28 - Dead notification icons removed
+
+**Issue**
+- The top-right notification bell on the Leads page did not perform any action.
+- The Dashboard had the same dead bell icon.
+
+**What I changed**
+- Removed both decorative bell icons.
+
+**Result**
+- The main headers no longer imply notification functionality that does not exist yet.
+
+## 2026-03-28 - Follow-Ups Header Bell Removed
+
+**Issue**
+- The Follow-ups page still rendered a top-right notification bell button even though there was no notification flow behind it.
+
+**What I changed**
+- Removed the button and its `Bell` icon import from [src/app/followups/followups-client.tsx](./src/app/followups/followups-client.tsx).
+
+**Result**
+- The page header no longer suggests an interactive notification feature that does not exist yet.
