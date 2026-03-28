@@ -21,3 +21,18 @@
 - Outside-sandbox `npm run build` succeeded (Prisma client generated; Next build produced the expected route list).
 - Inside-sandbox `npm run dev` fails with `Error: spawn EPERM` from `next-dev.js` (Next dev server forks/spawns).
 - `next start` in production mode is not sufficient for authenticated smoke tests over plain HTTP because session cookies are `Secure` in production and won’t be sent to `http://127.0.0.1`.
+
+## 2026-03-28 - Prisma JSON typing blocked lead update build
+
+**Issue**
+- `src/app/api/leads/[id]/route.ts` failed to compile because Prisma’s `details` field expects JSON-compatible input, but the audit payload was typed too loosely.
+
+**What I changed**
+- Tightened the change log payload to explicit string/null JSON values.
+- Cast the Prisma audit `details` payload to `Prisma.InputJsonValue`.
+
+**Why this works**
+- Prisma accepts JSON-compatible primitives/objects, and the lead audit trail only needs string/null field snapshots.
+
+**Verification**
+- `npm run build` completed successfully after this change.

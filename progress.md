@@ -224,3 +224,22 @@
 ### Current Status
 - Build + route verification can’t be executed from inside the sandbox due to `spawn EPERM`.
 - Next step is to rerun build and smoke tests outside the sandbox and then address any failing routes (specifically the earlier “slug vs slug?” symptom for Add Lead / Add Follow-up).
+
+---
+
+## 2026-03-28 - Lead Update Audit Log Type Fix
+
+### Tasks Completed
+
+1. **Fixed Prisma JSON typing in lead update audit log**
+   - **What:** Cast the `ActivityLog.details` payload to `Prisma.InputJsonValue` and narrowed change snapshots to string/null values
+   - **Why:** The build was failing because Prisma rejected the loosely typed JSON payload in `src/app/api/leads/[id]/route.ts`
+   - **Where:** `src/app/api/leads/[id]/route.ts`
+
+### Current Status
+- The lead update route should compile cleanly once Prisma regenerates.
+- Next step is to rerun the build in your deployment pipeline and confirm the generated deploy succeeds.
+
+### Follow-up
+- Re-ran `npm run build` after the Prisma JSON typing fix and the build completed successfully.
+- The branch is ready for redeploy and runtime verification.

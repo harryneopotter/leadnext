@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { normalizePhoneToLast10Digits } from "@/lib/phone";
 
 export async function PUT(
@@ -63,7 +64,10 @@ export async function PUT(
   const nextRemarks =
     typeof data.remarks === "string" && data.remarks.trim() ? data.remarks.trim() : null;
 
-  const changes: Record<string, { old: unknown; new: unknown }> = {};
+  type ChangeValue = string | null;
+  type LeadChange = Record<string, { old: ChangeValue; new: ChangeValue }>;
+
+  const changes: LeadChange = {};
   if (existingLead.name !== nextName) changes.name = { old: existingLead.name, new: nextName };
   if (existingLead.phone !== nextPhone) changes.phone = { old: existingLead.phone, new: nextPhone };
   if (existingLead.email !== nextEmail) changes.email = { old: existingLead.email, new: nextEmail };
@@ -91,7 +95,7 @@ export async function PUT(
         userId: adminId,
         leadId,
         action: Object.keys(changes).length === 1 && changes.status ? "UPDATE_STATUS" : "UPDATE_LEAD",
-        details: { changes },
+        details: { changes } as Prisma.InputJsonValue,
       },
     });
   }
@@ -127,7 +131,7 @@ export async function DELETE(
         userId: adminId,
         leadId: null,
         action: "DELETE_LEAD",
-        details: { lead },
+        details: { lead } as Prisma.InputJsonValue,
       },
     }),
     prisma.activityLog.deleteMany({ where: { leadId } }),
