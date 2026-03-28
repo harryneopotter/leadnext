@@ -349,3 +349,103 @@
 
 ### Current Status
 - The follow-ups header now shows only the search input and user avatar, which matches the implemented behavior.
+
+---
+
+## 2026-03-28 - Reviewed crm-feedback-v2.md
+
+### Review Notes
+
+1. **Already addressed in the current branch**
+   - Dead notification icons in Leads, Dashboard, and Follow-ups headers.
+   - Settings notification placeholder visibility.
+   - Follow-up time picker affordance.
+   - Integrations callback/configuration state handling.
+
+2. **Still relevant from the feedback**
+   - Route naming confusion around `Integrations` pointing at `/admin`.
+   - Status badge and source icon consistency on lead cards and lead detail.
+   - Follow-ups workflow gaps such as quick completion actions and date filtering.
+   - Global date-format consistency across pages.
+
+3. **Likely stale or partly resolved**
+   - Several screenshot-based layout complaints appear to refer to an earlier UI state, not the current branch.
+
+---
+
+## 2026-03-28 - crm-feedback-v2.md Ranked Checklist
+
+### Still Open
+
+1. **Route alias / nav naming**
+   - `Integrations` still points to `/admin`, which is confusing.
+   - `Follow-ups` is routed at `/followups`; if `/follow-ups` is expected externally, it needs a redirect or alias.
+
+2. **Lead status and source consistency**
+   - Normalize the badge treatment across `NEW`, `HOT`, `INTERESTED`, `FOLLOW_UP`, and `CONVERTED`.
+   - Add clearer source icons for `MANUAL`, `WHATSAPP`, and `FACEBOOK`.
+
+3. **Follow-ups workflow**
+   - Add a quick completion action directly on the follow-up cards.
+   - Add sorting or filtering by urgency/date range before the list grows.
+
+4. **Global date formatting**
+   - Pick one format and apply it consistently across lead detail, follow-ups, and dashboard-related timestamps.
+
+### Already Addressed
+
+1. Dead notification icons in Leads, Dashboard, and Follow-ups headers.
+2. Settings notification placeholder visibility.
+3. Follow-up time picker affordance.
+4. Integrations callback/configuration state handling.
+
+### Likely Stale
+
+1. The dashboard KPI clipping note appears to reference an earlier layout state.
+2. The plain back-button criticism does not match the current icon-backed buttons on the branch.
+
+---
+
+## 2026-03-28 - Reviewed crm-feedback-v3.md
+
+### Review Notes
+
+1. **High-signal visual issues still relevant**
+   - `NEW LEAD` badge treatment is still inconsistent with the other statuses.
+   - `INTERESTED` and `FOLLOW UP` remain too close in color family.
+   - The `Filter` button on Leads still reads visually lighter than the main CTA row.
+   - Several muted labels and helper texts likely still need stronger contrast.
+
+2. **Spacing issues still worth fixing**
+   - Leads page header and the gap before the lead grid still feel too tall.
+   - Lead detail rows and the lead-detail section gaps still need tightening.
+   - Settings layout still looks wide relative to the amount of content it holds.
+
+3. **Potentially stale or already improved**
+   - Some color notes reference earlier palette values, but the underlying accessibility concern is still valid.
+   - The checklist is mostly a polish pass rather than a structural bug report.
+
+---
+
+## 2026-03-28 - Applied Top Color/Contrast Fixes
+
+### Tasks Completed
+
+1. **Normalized lead status badges**
+   - **What:** Updated `NEW`, `INTERESTED`, and `CONVERTED` badges to use clearer pill colors across the leads list and lead detail page.
+   - **Why:** The previous treatment made `NEW LEAD` look like fallback text and kept `INTERESTED` too close to `FOLLOW UP`.
+   - **Where:** `src/app/leads/leads-client.tsx`, `src/app/leads/[id]/page.tsx`
+
+2. **Raised contrast on key dashboard and leads text**
+   - **What:** Darkened dashboard KPI labels and sublabels, improved the leads page subtitle, made the Filter button more visible, and changed the `View Profile` link to a darker green.
+   - **Why:** The audit called out weak contrast on the most common scanning text and actions.
+   - **Where:** `src/app/dashboard/dashboard-client.tsx`, `src/app/leads/leads-client.tsx`
+
+3. **Styled missing-city fallback more clearly**
+   - **What:** Rendered `Location Unknown` in muted italic text instead of treating it like normal city data.
+   - **Why:** Missing data should read as missing data at a glance.
+   - **Where:** `src/app/leads/leads-client.tsx`
+
+### Current Status
+- The highest-signal color consistency and contrast issues from `crm-feedback-v3.md` are now addressed in the current branch.
+- Next step is to verify the redeploy and then decide whether to tackle the remaining spacing and workflow items.

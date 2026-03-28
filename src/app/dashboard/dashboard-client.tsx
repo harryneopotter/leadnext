@@ -175,7 +175,7 @@ export function DashboardClient({ user, totalLeads }: DashboardClientProps) {
               Lead Management Dashboard
             </h3>
             <p style={{ 
-              color: "#637381", 
+              color: "#475569", 
               fontSize: "1.125rem", 
               maxWidth: "600px",
               lineHeight: 1.6
@@ -197,7 +197,7 @@ export function DashboardClient({ user, totalLeads }: DashboardClientProps) {
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <p style={{ fontSize: "0.75rem", fontWeight: "600", color: "#637381", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 0.5rem" }}>
+                    <p style={{ fontSize: "0.75rem", fontWeight: "700", color: "#475569", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 0.5rem" }}>
                       {s.label}
                     </p>
                     <p style={{ fontSize: "2rem", fontWeight: "700", color: "#171c1f", margin: 0, letterSpacing: "-0.03em", lineHeight: 1 }}>
@@ -213,7 +213,7 @@ export function DashboardClient({ user, totalLeads }: DashboardClientProps) {
                     {s.icon}
                   </div>
                 </div>
-                <p style={{ margin: "1rem 0 0", fontSize: "0.75rem", color: "#637381", fontWeight: "500" }}>
+                <p style={{ margin: "1rem 0 0", fontSize: "0.75rem", color: "#64748b", fontWeight: "500" }}>
                   {s.delta}
                 </p>
               </div>

@@ -54,16 +54,18 @@ export function LeadsPageClient({
 
   const getStatusStyles = (status: string) => {
     switch (status) {
+      case "NEW":
+        return { bg: "#dbeafe", text: "#1d4ed8", label: "New Lead" };
       case "CONVERTED":
-        return { bg: "#85f8c4", text: "#005137", label: "Converted" };
+        return { bg: "#d1fae5", text: "#065f46", label: "Converted" };
       case "INTERESTED":
-        return { bg: "#dae2fd", text: "#3f465c", label: "Interested" };
+        return { bg: "#fff7e6", text: "#b45309", label: "Interested" };
       case "HOT":
         return { bg: "#fee2e2", text: "#991b1b", label: "Hot Lead" };
       case "FOLLOW_UP":
         return { bg: "#ede9fe", text: "#5b21b6", label: "Follow Up" };
       default:
-        return { bg: "#f8fafc", text: "#637381", label: "New Lead" };
+        return { bg: "#dbeafe", text: "#1d4ed8", label: "New Lead" };
     }
   };
 
@@ -197,7 +199,7 @@ export function LeadsPageClient({
                 Active Leads
               </h2>
               <p style={{ 
-                color: "#3d4a42", 
+                color: "#475569", 
                 fontSize: "1.125rem", 
                 maxWidth: "600px",
                 lineHeight: 1.6
@@ -210,20 +212,21 @@ export function LeadsPageClient({
                 onClick={() => setShowFilters(!showFilters)}
                 style={{
                   padding: "0.75rem 1.5rem",
-                  background: "#e4e9ed",
-                  color: "#171c1f",
+                  background: "#f8fafc",
+                  color: "#0f172a",
                   fontSize: "0.875rem",
                   fontWeight: "600",
                   borderRadius: "0.75rem",
-                  border: "none",
+                  border: "1px solid #cbd5e1",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   gap: "0.5rem",
                   transition: "all 0.2s",
+                  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)",
                 }}
               >
-                <Filter size={20} />
+                <Filter size={20} style={{ color: "#475569" }} />
                 Filter
               </button>
               <Link href="/leads/new">
@@ -442,17 +445,22 @@ export function LeadsPageClient({
                       <h3 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#171c1f", marginBottom: "0.25rem" }}>
                         {lead.name}
                       </h3>
-                      <p style={{ color: "#3d4a42", fontSize: "0.875rem", marginBottom: "1rem" }}>
-                        {lead.city || "Location Unknown"} • {lead.source}
+                      <p style={{ color: "#475569", fontSize: "0.875rem", marginBottom: "1rem" }}>
+                        {lead.city ? (
+                          <span>{lead.city}</span>
+                        ) : (
+                          <span style={{ color: "#94a3b8", fontStyle: "italic" }}>Location Unknown</span>
+                        )}
+                        {" "}• {lead.source}
                       </p>
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", paddingTop: "1rem", marginBottom: "2rem" }}>
                         {lead.email && (
-                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", color: "#3d4a42" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", color: "#475569" }}>
                             <Mail size={20} />
                             <span style={{ fontSize: "0.875rem", fontWeight: "500" }}>{lead.email}</span>
                           </div>
                         )}
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", color: "#3d4a42" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", color: "#475569" }}>
                           <Phone size={20} />
                           <span style={{ fontSize: "0.875rem", fontWeight: "500" }}>{lead.phone}</span>
                         </div>
@@ -464,8 +472,8 @@ export function LeadsPageClient({
                         width: "100%",
                         padding: "1rem",
                         textAlign: "center",
-                        borderTop: "1px solid #e4e9ed",
-                        color: "#006948",
+                        borderTop: "1px solid #cbd5e1",
+                        color: "#047857",
                         fontWeight: "700",
                         fontSize: "0.875rem",
                         textDecoration: "none",
@@ -477,9 +485,11 @@ export function LeadsPageClient({
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.textDecoration = "underline";
+                        e.currentTarget.style.color = "#065f46";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.textDecoration = "none";
+                        e.currentTarget.style.color = "#047857";
                       }}
                     >
                       View Profile

@@ -35,12 +35,12 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
   }
 
   const statusColors: Record<string, { bg: string; text: string; label: string }> = {
-    NEW: { bg: "#f8fafc", text: "#637381", label: "New Lead" },
+    NEW: { bg: "#dbeafe", text: "#1d4ed8", label: "New Lead" },
     HOT: { bg: "#fee2e2", text: "#991b1b", label: "Hot Lead" },
-    INTERESTED: { bg: "#dae2fd", text: "#3f465c", label: "Interested" },
+    INTERESTED: { bg: "#fff7e6", text: "#b45309", label: "Interested" },
     NOT_INTERESTED: { bg: "#fecaca", text: "#7f1d1d", label: "Not Interested" },
     NOT_PICKED: { bg: "#fef3c7", text: "#92400e", label: "Not Picked" },
-    CONVERTED: { bg: "#85f8c4", text: "#005137", label: "Converted" },
+    CONVERTED: { bg: "#d1fae5", text: "#065f46", label: "Converted" },
     FOLLOW_UP: { bg: "#ede9fe", text: "#5b21b6", label: "Follow Up" },
   };
 
