@@ -276,10 +276,10 @@ export default function NewLeadPage({
                         type="text"
                         value={initialQuestionResponses[q.id] ?? ""}
                         onChange={(e) =>
-                          setInitialQuestionResponses({
-                            ...initialQuestionResponses,
+                          setInitialQuestionResponses((prev) => ({
+                            ...prev,
                             [q.id]: e.target.value,
-                          })
+                          }))
                         }
                         placeholder="Enter response"
                         style={{

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizePhoneToLast10Digits } from "@/lib/phone";
+import { MAX_INITIAL_LEAD_QUESTIONS } from "@/lib/initial-lead-questions";
 
 type InitialQuestionAnswer = {
   id: string;
@@ -29,7 +30,7 @@ function parseInitialQuestionResponses(
       };
     })
     .filter((item): item is InitialQuestionAnswer => Boolean(item))
-    .slice(0, 6);
+    .slice(0, MAX_INITIAL_LEAD_QUESTIONS);
 }
 
 export async function POST(req: NextRequest) {

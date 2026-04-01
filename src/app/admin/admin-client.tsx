@@ -5,11 +5,12 @@ import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, MessageCircle, Save, Loader2, Copy, Check, Plus, Trash2 } from "lucide-react";
 import type { UserRole } from "@prisma/client";
-
-type InitialLeadQuestion = {
-  id: string;
-  question: string;
-};
+import {
+  MAX_INITIAL_LEAD_QUESTIONS,
+  MIN_INITIAL_LEAD_QUESTIONS,
+  hasValidInitialLeadQuestionCount,
+  parseInitialLeadQuestions,
+} from "@/lib/initial-lead-questions";
 
 interface AdminPageProps {
   user: {
@@ -35,6 +36,7 @@ interface AdminPageProps {
 export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [questionError, setQuestionError] = useState("");
   const [formData, setFormData] = useState({
     whatsappToken: settings?.whatsappToken || "",
     whatsappPhoneId: settings?.whatsappPhoneNumberId || "",
@@ -44,26 +46,19 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
     smtpUser: settings?.smtpUser || "",
     smtpPassword: settings?.smtpPass || "",
     senderEmail: settings?.emailFrom || "",
-    initialLeadQuestions: Array.isArray(settings?.initialLeadQuestions)
-      ? settings.initialLeadQuestions
-          .map((item) => {
-            if (!item || typeof item !== "object") return null;
-            const id = "id" in item && typeof item.id === "string" ? item.id : null;
-            const question = "question" in item && typeof item.question === "string" ? item.question : null;
-            if (!id || !question) return null;
-            return { id, question };
-          })
-          .filter((item): item is InitialLeadQuestion => Boolean(item))
-      : [],
+    initialLeadQuestions: parseInitialLeadQuestions(settings?.initialLeadQuestions),
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nonEmptyQuestions = formData.initialLeadQuestions.filter((q) => q.question.trim());
-    if (nonEmptyQuestions.length > 0 && (nonEmptyQuestions.length < 5 || nonEmptyQuestions.length > 6)) {
-      alert("Please configure 5 to 6 initial questions, or leave all questions empty.");
+    if (!hasValidInitialLeadQuestionCount(nonEmptyQuestions)) {
+      setQuestionError(
+        `Please configure ${MIN_INITIAL_LEAD_QUESTIONS} to ${MAX_INITIAL_LEAD_QUESTIONS} initial questions, or leave all questions empty.`
+      );
       return;
     }
+    setQuestionError("");
     setSaving(true);
     
     try {
@@ -102,12 +97,12 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
     : "";
 
   const addQuestion = () => {
-    if (formData.initialLeadQuestions.length >= 6) return;
+    if (formData.initialLeadQuestions.length >= MAX_INITIAL_LEAD_QUESTIONS) return;
     setFormData({
       ...formData,
       initialLeadQuestions: [
         ...formData.initialLeadQuestions,
-        { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, question: "" },
+        { id: crypto.randomUUID(), question: "" },
       ],
     });
   };
@@ -430,15 +425,15 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
                     Initial Lead Questions
                   </h4>
                   <p style={{ color: "#637381", fontSize: "0.875rem", margin: 0 }}>
-                    Configure 5-6 questions asked for every new lead.
+                    Configure {MIN_INITIAL_LEAD_QUESTIONS}-{MAX_INITIAL_LEAD_QUESTIONS} questions asked for every new lead.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={addQuestion}
-                  disabled={formData.initialLeadQuestions.length >= 6}
+                  disabled={formData.initialLeadQuestions.length >= MAX_INITIAL_LEAD_QUESTIONS}
                   style={{
-                    background: formData.initialLeadQuestions.length >= 6 ? "#cbd5e1" : "#10b981",
+                    background: formData.initialLeadQuestions.length >= MAX_INITIAL_LEAD_QUESTIONS ? "#cbd5e1" : "#10b981",
                     color: "white",
                     padding: "0.625rem 0.875rem",
                     borderRadius: "0.625rem",
@@ -448,7 +443,7 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
                     gap: "0.5rem",
                     fontSize: "0.875rem",
                     fontWeight: "600",
-                    cursor: formData.initialLeadQuestions.length >= 6 ? "not-allowed" : "pointer",
+                    cursor: formData.initialLeadQuestions.length >= MAX_INITIAL_LEAD_QUESTIONS ? "not-allowed" : "pointer",
                   }}
                 >
                   <Plus size={16} />
@@ -496,8 +491,13 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
               </div>
 
               <p style={{ margin: "1rem 0 0", fontSize: "0.75rem", color: "#64748b" }}>
-                Configured questions: {configuredCount}/6 (minimum 5 if enabled).
+                Configured questions: {configuredCount}/{MAX_INITIAL_LEAD_QUESTIONS} (minimum {MIN_INITIAL_LEAD_QUESTIONS} if enabled).
               </p>
+              {questionError ? (
+                <p style={{ margin: "0.5rem 0 0", fontSize: "0.75rem", color: "#b91c1c", fontWeight: 600 }}>
+                  {questionError}
+                </p>
+              ) : null}
             </section>
 
             {/* Save Button */}
