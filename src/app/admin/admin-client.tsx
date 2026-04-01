@@ -3,8 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
-import { ArrowLeft, MessageCircle, Save, Loader2, Copy, Check } from "lucide-react";
+import { ArrowLeft, MessageCircle, Save, Loader2, Copy, Check, Plus, Trash2 } from "lucide-react";
 import type { UserRole } from "@prisma/client";
+
+type InitialLeadQuestion = {
+  id: string;
+  question: string;
+};
 
 interface AdminPageProps {
   user: {
@@ -22,6 +27,7 @@ interface AdminPageProps {
     smtpUser: string | null;
     smtpPass: string | null;
     emailFrom: string | null;
+    initialLeadQuestions: unknown;
   };
   baseUrl: string;
 }
@@ -38,17 +44,36 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
     smtpUser: settings?.smtpUser || "",
     smtpPassword: settings?.smtpPass || "",
     senderEmail: settings?.emailFrom || "",
+    initialLeadQuestions: Array.isArray(settings?.initialLeadQuestions)
+      ? settings.initialLeadQuestions
+          .map((item) => {
+            if (!item || typeof item !== "object") return null;
+            const id = "id" in item && typeof item.id === "string" ? item.id : null;
+            const question = "question" in item && typeof item.question === "string" ? item.question : null;
+            if (!id || !question) return null;
+            return { id, question };
+          })
+          .filter((item): item is InitialLeadQuestion => Boolean(item))
+      : [],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const nonEmptyQuestions = formData.initialLeadQuestions.filter((q) => q.question.trim());
+    if (nonEmptyQuestions.length > 0 && (nonEmptyQuestions.length < 5 || nonEmptyQuestions.length > 6)) {
+      alert("Please configure 5 to 6 initial questions, or leave all questions empty.");
+      return;
+    }
     setSaving(true);
     
     try {
       const res = await fetch("/api/admin/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          initialLeadQuestions: nonEmptyQuestions,
+        }),
       });
       
       if (res.ok) {
@@ -75,6 +100,35 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
   const webhookUrl = baseUrl
     ? `${baseUrl}/api/webhooks/whatsapp/${user.id}`
     : "";
+
+  const addQuestion = () => {
+    if (formData.initialLeadQuestions.length >= 6) return;
+    setFormData({
+      ...formData,
+      initialLeadQuestions: [
+        ...formData.initialLeadQuestions,
+        { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, question: "" },
+      ],
+    });
+  };
+
+  const removeQuestion = (id: string) => {
+    setFormData({
+      ...formData,
+      initialLeadQuestions: formData.initialLeadQuestions.filter((q) => q.id !== id),
+    });
+  };
+
+  const updateQuestion = (id: string, question: string) => {
+    setFormData({
+      ...formData,
+      initialLeadQuestions: formData.initialLeadQuestions.map((q) =>
+        q.id === id ? { ...q, question } : q
+      ),
+    });
+  };
+
+  const configuredCount = formData.initialLeadQuestions.filter((q) => q.question.trim()).length;
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f6fafe" }}>
       {/* ── Sidebar ── */}
@@ -361,6 +415,89 @@ export function AdminPageClient({ user, settings, baseUrl }: AdminPageProps) {
                   </p>
                 </div>
               </div>
+            </section>
+
+            <section style={{
+              background: "white",
+              borderRadius: "0.75rem",
+              padding: "2rem",
+              boxShadow: "0 24px 48px rgba(23,28,31,0.06)",
+              transition: "all 0.3s ease",
+            }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.5rem", gap: "1rem" }}>
+                <div>
+                  <h4 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#171c1f", margin: "0 0 0.25rem" }}>
+                    Initial Lead Questions
+                  </h4>
+                  <p style={{ color: "#637381", fontSize: "0.875rem", margin: 0 }}>
+                    Configure 5-6 questions asked for every new lead.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addQuestion}
+                  disabled={formData.initialLeadQuestions.length >= 6}
+                  style={{
+                    background: formData.initialLeadQuestions.length >= 6 ? "#cbd5e1" : "#10b981",
+                    color: "white",
+                    padding: "0.625rem 0.875rem",
+                    borderRadius: "0.625rem",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    fontSize: "0.875rem",
+                    fontWeight: "600",
+                    cursor: formData.initialLeadQuestions.length >= 6 ? "not-allowed" : "pointer",
+                  }}
+                >
+                  <Plus size={16} />
+                  Add Question
+                </button>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+                {formData.initialLeadQuestions.map((q, index) => (
+                  <div key={q.id} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.75rem", alignItems: "center" }}>
+                    <input
+                      type="text"
+                      value={q.question}
+                      onChange={(e) => updateQuestion(q.id, e.target.value)}
+                      placeholder={`Question ${index + 1} (e.g. Which service are you interested in?)`}
+                      style={{
+                        width: "100%",
+                        background: "#f8fafc",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                        padding: "0.75rem 1rem",
+                        fontSize: "0.875rem",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeQuestion(q.id)}
+                      style={{
+                        background: "#fee2e2",
+                        color: "#b91c1c",
+                        border: "none",
+                        borderRadius: "0.5rem",
+                        padding: "0.625rem",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      aria-label={`Remove question ${index + 1}`}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <p style={{ margin: "1rem 0 0", fontSize: "0.75rem", color: "#64748b" }}>
+                Configured questions: {configuredCount}/6 (minimum 5 if enabled).
+              </p>
             </section>
 
             {/* Save Button */}
