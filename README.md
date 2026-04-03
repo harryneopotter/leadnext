@@ -112,12 +112,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🔑 Default Credentials (Seed Data)
 
-> ⚠️ **Change these immediately in any non-local environment.**
 
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | `superadmin@leadcrm.com` | `SuperAdmin@2024!` |
-| Admin | `admin@leadcrm.com` | `Admin@2024!` |
 
 ---
 
