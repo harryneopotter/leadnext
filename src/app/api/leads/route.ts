@@ -20,17 +20,18 @@ function parseInitialQuestionResponses(
   if (!responses || typeof responses !== "object") return [];
   const parsedQuestions = parseInitialLeadQuestions(questions);
   if (!hasValidInitialLeadQuestionCount(parsedQuestions)) return [];
-  return parsedQuestions
-    .map((item) => {
-      const answerValue = item.id in responses ? (responses as Record<string, unknown>)[item.id] : "";
-      const answer = typeof answerValue === "string" ? answerValue.trim() : "";
-      return {
-        id: item.id,
-        question: item.question,
-        answer,
-      };
-    })
-    .filter((item): item is InitialQuestionAnswer => item.answer.length > 0);
+  const parsedResponses: InitialQuestionAnswer[] = [];
+  for (const item of parsedQuestions) {
+    const answerValue = item.id in responses ? (responses as Record<string, unknown>)[item.id] : "";
+    const answer = typeof answerValue === "string" ? answerValue.trim() : "";
+    if (!answer) continue;
+    parsedResponses.push({
+      id: item.id,
+      question: item.question,
+      answer,
+    });
+  }
+  return parsedResponses;
 }
 
 export async function POST(req: NextRequest) {
