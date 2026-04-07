@@ -32,8 +32,23 @@ export async function POST(req: NextRequest) {
   }
 
   const adminId = session.user.id;
-  const data = await req.json();
-  const questions = parseInitialLeadQuestions(data.questions);
+
+  let questions: ReturnType<typeof parseInitialLeadQuestions>;
+  try {
+    const data: unknown = await req.json();
+    if (!data || typeof data !== "object" || !("questions" in data)) {
+      return NextResponse.json(
+        { error: "Invalid JSON body. Expected an object with a questions field." },
+        { status: 400 }
+      );
+    }
+    questions = parseInitialLeadQuestions((data as { questions: unknown }).questions);
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON body. Expected an object with a questions field." },
+      { status: 400 }
+    );
+  }
 
   if (!hasValidInitialLeadQuestionCount(questions)) {
     return NextResponse.json(

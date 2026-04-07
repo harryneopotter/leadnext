@@ -330,6 +330,7 @@ export default function QuestionsClient({ user, questions: initialQuestions }: Q
                     </span>
                     <input
                       type="text"
+                      aria-label={`Question ${index + 1}`}
                       value={q.question}
                       onChange={(e) => updateQuestion(q.id, e.target.value)}
                       placeholder={PLACEHOLDER_EXAMPLES[index] ?? `Question ${index + 1}`}
