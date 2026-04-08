@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Plus, Filter, Search, X, Users, Mail, Phone, ChevronRight } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface Lead {
   id: string;
@@ -23,7 +23,7 @@ export function LeadsPageClient({
   user,
 }: {
   leads: Lead[];
-  user: { id: string; email: string; name?: string | null; role: UserRole };
+  user: { id: string; email: string; name?: string | null; role: "SUPER_ADMIN" | "ADMIN" | "CLIENT" };
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();

@@ -1,0 +1,130 @@
+
+> leadcrm-next@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+- Environments: .env.local
+✓ Ready in 564ms
+
+ GET /api/auth/csrf 200 in 1271ms (next.js: 1228ms, application-code: 43ms)
+ POST /api/auth/callback/credentials 302 in 613ms (next.js: 19ms, application-code: 594ms)
+ GET / 200 in 702ms (next.js: 158ms, proxy.ts: 116ms, application-code: 428ms)
+ GET /api/auth/session 200 in 38ms (next.js: 22ms, application-code: 16ms)
+ GET /api/auth/session 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ GET /login 200 in 1708ms (next.js: 1487ms, proxy.ts: 9ms, application-code: 212ms)
+ GET /api/auth/session 200 in 32ms (next.js: 24ms, application-code: 8ms)
+ GET /api/auth/session 200 in 15ms (next.js: 4ms, application-code: 11ms)
+ GET /api/auth/providers 200 in 16ms (next.js: 5ms, application-code: 11ms)
+ GET /api/auth/csrf 200 in 23ms (next.js: 9ms, application-code: 13ms)
+ POST /api/auth/callback/credentials? 200 in 632ms (next.js: 10ms, application-code: 621ms)
+ GET /api/auth/session 200 in 48ms (next.js: 4ms, application-code: 44ms)
+ GET /dashboard 200 in 2.1s (next.js: 1735ms, proxy.ts: 20ms, application-code: 315ms)
+ GET /api/auth/session 200 in 133ms (next.js: 33ms, application-code: 100ms)
+ GET /api/auth/session 200 in 94ms (next.js: 15ms, application-code: 79ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="dashboard/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                <SegmentViewNode type="page" pagePath="src/dashbo...">
+                  <SegmentTrieNode>
+                  <DashboardPageServer>
+                    <DashboardClient user={{name:"Supe...", ...}} totalLeads={3}>
+                      <div style={{display:"flex", ...}}>
+                        <Sidebar>
+                        <div className="main-content" style={{flex:1, ...}}>
+                          <header style={{...}}>
+                            <div>
+                            <div style={{display:"flex", ...}}>
+                              <div style={{display:"flex", ...}}>
+                                <Search>
+                                <input
+                                  type="text"
+                                  placeholder="Search leads..."
+                                  style={{
++                                   background: "transparent"
++                                   border: "none"
++                                   outline: "none"
++                                   fontSize: "0.875rem"
++                                   width: "200px"
+-                                   width: "200px"
+-                                   background-image: "initial"
+-                                   background-position-x: "initial"
+-                                   background-position-y: "initial"
+-                                   background-size: "initial"
+-                                   background-repeat: "initial"
+-                                   background-attachment: "initial"
+-                                   background-origin: "initial"
+-                                   background-clip: "initial"
+-                                   background-color: "transparent"
+-                                   border-top-width: "initial"
+-                                   border-right-width: "initial"
+-                                   border-bottom-width: "initial"
+-                                   border-left-width: "initial"
+-                                   border-top-style: "none"
+-                                   border-right-style: "none"
+-                                   border-bottom-style: "none"
+-                                   border-left-style: "none"
+-                                   border-top-color: "initial"
+-                                   border-right-color: "initial"
+-                                   border-bottom-color: "initial"
+-                                   border-left-color: "initial"
+-                                   border-image-source: "initial"
+-                                   border-image-slice: "initial"
+-                                   border-image-width: "initial"
+-                                   border-image-outset: "initial"
+-                                   border-image-repeat: "initial"
+-                                   outline-color: "initial"
+-                                   outline-style: "none"
+-                                   outline-width: "initial"
+-                                   font-size: "0.875rem"
+-                                   caret-color: "transparent"
+                                  }}
+                                >
+                              ...
+                          ...
+                ...
+              ...
+
+ GET /login 200 in 129ms (next.js: 7ms, proxy.ts: 18ms, application-code: 103ms)
+ GET /api/auth/session 200 in 47ms (next.js: 35ms, application-code: 12ms)
+ GET /api/auth/session 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ GET /api/auth/providers 200 in 12ms (next.js: 3ms, application-code: 8ms)
+ GET /api/auth/csrf 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ POST /api/auth/callback/credentials? 200 in 560ms (next.js: 3ms, application-code: 557ms)
+ GET /api/auth/session 200 in 17ms (next.js: 3ms, application-code: 14ms)
+ GET /dashboard 200 in 185ms (next.js: 4ms, proxy.ts: 21ms, application-code: 159ms)
+ GET /api/auth/session 200 in 46ms (next.js: 24ms, application-code: 22ms)
+ GET /api/auth/session 200 in 27ms (next.js: 4ms, application-code: 23ms)
+ GET /admin 200 in 1107ms (next.js: 947ms, proxy.ts: 11ms, application-code: 149ms)
+ GET /api/auth/session 200 in 40ms (next.js: 24ms, application-code: 16ms)
+ GET /api/auth/session 200 in 16ms (next.js: 3ms, application-code: 13ms)
+ GET /login 200 in 72ms (next.js: 5ms, proxy.ts: 6ms, application-code: 61ms)
+ GET /api/auth/session 200 in 44ms (next.js: 25ms, application-code: 19ms)
+ GET /api/auth/session 200 in 11ms (next.js: 5ms, application-code: 6ms)
+ GET /api/auth/providers 200 in 23ms (next.js: 9ms, application-code: 15ms)
+ GET /api/auth/csrf 200 in 11ms (next.js: 3ms, application-code: 8ms)
+ POST /api/auth/callback/credentials? 200 in 569ms (next.js: 11ms, application-code: 558ms)
+ GET /api/auth/session 200 in 24ms (next.js: 4ms, application-code: 20ms)
+ GET /dashboard 200 in 154ms (next.js: 8ms, proxy.ts: 15ms, application-code: 131ms)
+ GET /api/auth/session 200 in 44ms (next.js: 28ms, application-code: 16ms)
+ GET /api/auth/session 200 in 22ms (next.js: 3ms, application-code: 19ms)
+ GET /settings 200 in 1601ms (next.js: 1047ms, proxy.ts: 26ms, application-code: 528ms)
+ GET /api/auth/session 200 in 45ms (next.js: 27ms, application-code: 19ms)
+ GET /api/auth/session 200 in 15ms (next.js: 3ms, application-code: 12ms)

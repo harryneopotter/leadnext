@@ -92,10 +92,10 @@ export async function POST(
         userId: adminId,
         leadId: lead.id,
         action: "LEAD_INGESTED",
-        details: { 
+        details: JSON.stringify({
           source: data.source || "API",
           phone: normalizedPhone 
-        },
+        }),
       },
     });
 

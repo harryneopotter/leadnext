@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Calendar, Clock, Phone, Plus, Search } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface FollowupsClientProps {
   user: {
     id: string;
     email: string;
     name?: string | null;
-    role: UserRole;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
   };
   followUps: Array<{
     id: string;

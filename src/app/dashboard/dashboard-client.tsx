@@ -14,14 +14,14 @@ import {
   Settings,
   Activity
 } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface DashboardClientProps {
   user: {
     id: string;
     email: string;
     name?: string | null;
-    role: UserRole;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
   };
   totalLeads: number;
 }

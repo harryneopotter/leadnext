@@ -13,7 +13,7 @@ import {
   CheckCircle,
   Info,
 } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 import {
   MAX_INITIAL_LEAD_QUESTIONS,
   MIN_INITIAL_LEAD_QUESTIONS,
@@ -35,7 +35,7 @@ interface QuestionsClientProps {
     id: string;
     email: string;
     name?: string | null;
-    role: UserRole;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
   };
   questions: InitialLeadQuestion[];
 }

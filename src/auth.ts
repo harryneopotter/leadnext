@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
+
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -87,7 +87,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id;
       }
       if (token && token.role) {
-        session.user.role = token.role as UserRole;
+        session.user.role = token.role as ("SUPER_ADMIN" | "ADMIN" | "CLIENT");
       }
       return session;
     },

@@ -4,14 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, MessageCircle, Save, Loader2, Copy, Check } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface AdminPageProps {
   user: {
     id: string;
     email: string;
     name?: string | null;
-    role: UserRole;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
   };
   settings: null | {
     whatsappToken: string | null;

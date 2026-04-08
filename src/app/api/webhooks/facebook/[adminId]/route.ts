@@ -150,10 +150,10 @@ export async function POST(
         userId: adminId,
         leadId: lead.id,
         action: "FACEBOOK_LEAD_CAPTURED",
-        details: { 
+        details: JSON.stringify({
           leadgen_id: leadgen_id || null,
           phone: normalizedPhone 
-        },
+        }),
       },
     });
     

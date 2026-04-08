@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider  = "sqlite"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 // ─── USERS ───────────────────────────────────
@@ -18,8 +17,8 @@ model User {
   email       String      @unique
   password    String      // bcrypt, cost factor >= 12. NEVER plaintext.
   name        String
-  role        UserRole    @default(ADMIN)
-  status      UserStatus  @default(ACTIVE)
+  role        String    @default("ADMIN")
+  status      String  @default("ACTIVE")
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -35,22 +34,7 @@ model User {
   @@index([status])
 }
 
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  CLIENT     // Reserved for V2 — do not implement in V1
-}
-
-enum UserStatus {
-  ACTIVE
-  SUSPENDED
-  DELETED
-}
-
 // ─── ADMIN SETTINGS (per-admin config) ────────────────────────────
-// Each ADMIN has their own WhatsApp Business number and credentials.
-// There is NO global WhatsApp config. Each business client = separate Meta setup.
-// whatsappToken and smtpPass are AES-256 encrypted before storage.
 
 model AdminSettings {
   id                      String   @id @default(uuid())
@@ -73,17 +57,16 @@ model AdminSettings {
   // Preferences
   timezone                String   @default("Asia/Kolkata")
   reminderLeadTime        Int      @default(30) // minutes before follow-up to fire reminder
-  initialLeadQuestions    Json?    // Per-admin list of 5-6 initial lead intake questions
+  initialLeadQuestions    String?    // Per-admin list of 5-6 initial lead intake questions. Stringified JSON since sqlite doesnt have Json
 
   updatedAt               DateTime @updatedAt
 }
 
 // ─── SYSTEM SETTINGS (global, SUPER_ADMIN only) ───────────────────
-// Platform-level config only. WhatsApp/email config is in AdminSettings.
 
 model SystemSettings {
   id        String   @id @default(cuid())
-  settings  Json?
+  settings  String?  // Stringified json
   updatedAt DateTime @updatedAt
   updatedBy String?
 }
@@ -101,11 +84,11 @@ model Lead {
   phone       String
   email       String?
   city        String?
-  source      LeadSource  @default(MANUAL)
-  status      LeadStatus  @default(NEW)
+  source      String  @default("MANUAL")
+  status      String  @default("NEW")
   remarks     String?
   whatsappOptIn Boolean   @default(false)
-  initialQuestionResponses Json?   // Captured answers for admin-configured initial questions
+  initialQuestionResponses String?   // Captured answers for admin-configured initial questions
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -120,30 +103,7 @@ model Lead {
   @@unique([adminId, phone]) // Phone unique per admin, not globally
 }
 
-enum LeadSource {
-  MANUAL
-  FACEBOOK
-  WHATSAPP
-  WEBSITE
-  REFERRAL
-  OTHER
-}
-
-enum LeadStatus {
-  NEW
-  INTERESTED
-  NOT_INTERESTED
-  NOT_PICKED
-  HOT
-  CONVERTED
-  FOLLOW_UP
-}
-
 // ─── FOLLOW-UPS ───────────────────────────────────────────────────
-// Replaces the PHP `follow_up_date + reminder_sent BOOLEAN` pattern.
-// A lead can have multiple follow-ups over its lifecycle.
-// adminId is intentionally denormalized here for efficient dashboard queries
-// ("show today's follow-ups for admin X") without joining through Lead.
 
 model FollowUp {
   id              String          @id @default(uuid())
@@ -155,7 +115,7 @@ model FollowUp {
   admin           User            @relation(fields: [adminId], references: [id])
 
   scheduledAt     DateTime        // When the follow-up is due
-  status          FollowUpStatus  @default(PENDING)
+  status          String  @default("PENDING")
 
   reminderSentAt  DateTime?       // Null = reminder not yet fired
   reminderChannel String?         // "whatsapp" | "email" | "both"
@@ -173,14 +133,6 @@ model FollowUp {
   @@index([status])
 }
 
-enum FollowUpStatus {
-  PENDING     // Scheduled, reminder not yet sent
-  REMINDED    // Reminder sent, awaiting action
-  COMPLETED   // Done
-  SNOOZED     // Pushed to snoozedUntil datetime
-  CANCELLED
-}
-
 // ─── ACTIVITY LOG ─────────────────────────────────────────────────
 
 model ActivityLog {
@@ -195,7 +147,7 @@ model ActivityLog {
   // Action strings: "CREATE_LEAD", "UPDATE_STATUS", "SEND_WHATSAPP",
   // "FOLLOW_UP_CREATED", "FOLLOW_UP_COMPLETED", "FOLLOW_UP_SNOOZED", etc.
   action    String
-  details   Json?    // { oldValue, newValue, metadata }
+  details   String?    // { oldValue, newValue, metadata }
 
   createdAt DateTime @default(now())
 

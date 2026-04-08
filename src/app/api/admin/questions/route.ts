@@ -62,8 +62,8 @@ export async function POST(req: NextRequest) {
   try {
     await prisma.adminSettings.upsert({
       where: { adminId },
-      update: { initialLeadQuestions: questions.length ? questions : null },
-      create: { adminId, initialLeadQuestions: questions.length ? questions : null },
+      update: { initialLeadQuestions: questions.length ? JSON.stringify(questions) : null },
+      create: { adminId, initialLeadQuestions: questions.length ? JSON.stringify(questions) : null },
     });
 
     return NextResponse.json({ success: true });

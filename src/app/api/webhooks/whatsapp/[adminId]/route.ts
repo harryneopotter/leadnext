@@ -184,7 +184,7 @@ export async function POST(
         userId: adminId,
         leadId: lead.id,
         action: "WHATSAPP_LEAD_CAPTURED",
-        details: { message: text, status },
+        details: JSON.stringify({ message: text, status }),
       },
     });
     

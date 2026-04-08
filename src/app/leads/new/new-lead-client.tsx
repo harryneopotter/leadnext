@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Save, Loader2, UserPlus, Mail, Phone, MapPin, Tag } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 export default function NewLeadPage({
   user,
   initialLeadQuestions,
 }: {
-  user: { id: string; email: string; name?: string | null; role: UserRole };
+  user: { id: string; email: string; name?: string | null; role: "SUPER_ADMIN" | "ADMIN" | "CLIENT" };
   initialLeadQuestions: { id: string; question: string }[];
 }) {
   const router = useRouter();

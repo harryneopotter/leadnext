@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 type AppUser = {
   id: string;
   email: string;
   name?: string | null;
-  role: UserRole;
+  role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
 };
 
 type LeadForEdit = {

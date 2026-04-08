@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       status: typeof data.status === "string" ? data.status : "NEW",
       source: typeof data.source === "string" ? data.source : "MANUAL",
       remarks: typeof data.remarks === "string" && data.remarks.trim() ? data.remarks.trim() : null,
-      initialQuestionResponses: initialQuestionResponses.length ? initialQuestionResponses : null,
+      initialQuestionResponses: initialQuestionResponses.length ? JSON.stringify(initialQuestionResponses) : null,
     },
   });
 
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       userId: adminId,
       leadId: lead.id,
       action: "CREATE_LEAD",
-      details: { source: lead.source },
+      details: JSON.stringify({ source: lead.source }),
     },
   });
 
