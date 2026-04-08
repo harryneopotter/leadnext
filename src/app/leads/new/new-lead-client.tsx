@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,7 +12,7 @@ export default function NewLeadPage({
   user,
   initialLeadQuestions,
 }: {
-  user: { id: string; email: string; name?: string | null; role: "SUPER_ADMIN" | "ADMIN" | "CLIENT" };
+  user: { id: string; email: string; name?: string | null; role: UserRole };
   initialLeadQuestions: { id: string; question: string }[];
 }) {
   const router = useRouter();

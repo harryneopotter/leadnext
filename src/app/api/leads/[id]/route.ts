@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { normalizePhoneToLast10Digits } from "@/lib/phone";
 
 export async function PUT(
@@ -94,7 +95,7 @@ export async function PUT(
         userId: adminId,
         leadId,
         action: Object.keys(changes).length === 1 && changes.status ? "UPDATE_STATUS" : "UPDATE_LEAD",
-        details: JSON.stringify({ changes }),
+        details: { changes } as Prisma.InputJsonValue,
       },
     });
   }
@@ -130,7 +131,7 @@ export async function DELETE(
         userId: adminId,
         leadId: null,
         action: "DELETE_LEAD",
-        details: JSON.stringify({ lead }),
+        details: { lead } as Prisma.InputJsonValue,
       },
     }),
     prisma.activityLog.deleteMany({ where: { leadId } }),

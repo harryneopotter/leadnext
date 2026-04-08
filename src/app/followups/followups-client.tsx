@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Calendar, Clock, Phone, Plus, Search } from "lucide-react";
@@ -10,7 +11,7 @@ interface FollowupsClientProps {
     id: string;
     email: string;
     name?: string | null;
-    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+    role: UserRole;
   };
   followUps: Array<{
     id: string;

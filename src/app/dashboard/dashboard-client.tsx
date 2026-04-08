@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
@@ -21,7 +22,7 @@ interface DashboardClientProps {
     id: string;
     email: string;
     name?: string | null;
-    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+    role: UserRole;
   };
   totalLeads: number;
 }

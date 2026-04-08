@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,7 +12,7 @@ type AppUser = {
   id: string;
   email: string;
   name?: string | null;
-  role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+  role: UserRole;
 };
 
 type LeadForFollowUp = {

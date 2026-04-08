@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -23,7 +24,7 @@ export function LeadsPageClient({
   user,
 }: {
   leads: Lead[];
-  user: { id: string; email: string; name?: string | null; role: "SUPER_ADMIN" | "ADMIN" | "CLIENT" };
+  user: { id: string; email: string; name?: string | null; role: UserRole };
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();

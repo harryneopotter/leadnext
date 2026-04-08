@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         userId: adminId,
         leadId: data.leadId,
         action: "FOLLOW_UP_CREATED",
-        details: JSON.stringify({ scheduledAt: scheduledAt.toISOString() }),
+        details: { scheduledAt: scheduledAt.toISOString() },
       },
     });
 
