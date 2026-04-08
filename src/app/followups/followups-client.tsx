@@ -1,9 +1,10 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Calendar, Clock, Phone, Plus, Search } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface FollowupsClientProps {
   user: {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import {
   MAX_INITIAL_LEAD_QUESTIONS,
   MIN_INITIAL_LEAD_QUESTIONS,
@@ -62,8 +63,8 @@ export async function POST(req: NextRequest) {
   try {
     await prisma.adminSettings.upsert({
       where: { adminId },
-      update: { initialLeadQuestions: questions.length ? questions : null },
-      create: { adminId, initialLeadQuestions: questions.length ? questions : null },
+      update: { initialLeadQuestions: (questions.length ? questions : null) as Prisma.InputJsonValue },
+      create: { adminId, initialLeadQuestions: (questions.length ? questions : null) as Prisma.InputJsonValue },
     });
 
     return NextResponse.json({ success: true });

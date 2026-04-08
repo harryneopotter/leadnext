@@ -1,10 +1,11 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, MessageCircle, Save, Loader2, Copy, Check } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface AdminPageProps {
   user: {

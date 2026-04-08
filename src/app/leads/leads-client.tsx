@@ -1,11 +1,12 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Plus, Filter, Search, X, Users, Mail, Phone, ChevronRight } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 interface Lead {
   id: string;

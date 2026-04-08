@@ -1,11 +1,12 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Calendar, Clock, Loader2, Plus } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 type AppUser = {
   id: string;

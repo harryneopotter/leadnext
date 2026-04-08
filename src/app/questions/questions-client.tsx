@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
@@ -13,7 +14,7 @@ import {
   CheckCircle,
   Info,
 } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 import {
   MAX_INITIAL_LEAD_QUESTIONS,
   MIN_INITIAL_LEAD_QUESTIONS,

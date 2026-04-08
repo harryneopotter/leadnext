@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { normalizePhoneToLast10Digits } from "@/lib/phone";
 import {
   hasValidInitialLeadQuestionCount,
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
       status: typeof data.status === "string" ? data.status : "NEW",
       source: typeof data.source === "string" ? data.source : "MANUAL",
       remarks: typeof data.remarks === "string" && data.remarks.trim() ? data.remarks.trim() : null,
-      initialQuestionResponses: initialQuestionResponses.length ? initialQuestionResponses : null,
+      initialQuestionResponses: (initialQuestionResponses.length ? initialQuestionResponses : null) as Prisma.InputJsonValue,
     },
   });
 

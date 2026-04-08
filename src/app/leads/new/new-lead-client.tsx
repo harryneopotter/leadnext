@@ -1,11 +1,12 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { ArrowLeft, Save, Loader2, UserPlus, Mail, Phone, MapPin, Tag } from "lucide-react";
-import type { UserRole } from "@prisma/client";
+
 
 export default function NewLeadPage({
   user,
