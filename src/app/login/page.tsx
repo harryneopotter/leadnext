@@ -6,6 +6,13 @@ import { useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { isSafeUrl } from "@/lib/url";
 
+/**
+ * Render a credential login form that submits credentials, displays validation and server errors, and redirects to a validated callback URL on success.
+ *
+ * The component manages controlled email and password inputs, a password-visibility toggle, loading state, and an error banner. It derives a safe `callbackUrl` from the current search params (falling back to `/dashboard`), calls NextAuth's `signIn` with `redirect: false`, and navigates to the validated `callbackUrl` when authentication succeeds.
+ *
+ * @returns A React element containing the credential login form.
+ */
 function LoginForm() {
   const searchParams = useSearchParams();
   const paramUrl = searchParams.get("callbackUrl");
