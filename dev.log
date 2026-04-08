@@ -128,3 +128,96 @@ https://react.dev/link/hydration-mismatch
  GET /settings 200 in 1601ms (next.js: 1047ms, proxy.ts: 26ms, application-code: 528ms)
  GET /api/auth/session 200 in 45ms (next.js: 27ms, application-code: 19ms)
  GET /api/auth/session 200 in 15ms (next.js: 3ms, application-code: 12ms)
+ GET / 200 in 1483ms (next.js: 122ms, proxy.ts: 199ms, application-code: 1162ms)
+ GET /api/auth/session 200 in 341ms (next.js: 269ms, application-code: 71ms)
+ GET /api/auth/session 200 in 15ms (next.js: 7ms, application-code: 8ms)
+ GET /login 200 in 242ms (next.js: 19ms, proxy.ts: 17ms, application-code: 206ms)
+ GET /api/auth/session 200 in 31ms (next.js: 18ms, application-code: 14ms)
+ GET /api/auth/session 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET /api/auth/providers 200 in 12ms (next.js: 4ms, application-code: 8ms)
+ GET /api/auth/csrf 200 in 15ms (next.js: 5ms, application-code: 9ms)
+ POST /api/auth/callback/credentials? 200 in 1567ms (next.js: 4ms, application-code: 1564ms)
+ GET /api/auth/session 200 in 108ms (next.js: 53ms, application-code: 55ms)
+ GET /dashboard 200 in 328ms (next.js: 153ms, proxy.ts: 34ms, application-code: 141ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+      <LoadingBoundary name="dashboard/" loading={null}>
+        <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                <SegmentViewNode type="page" pagePath="src/dashbo...">
+                  <SegmentTrieNode>
+                  <DashboardPageServer>
+                    <DashboardClient user={{name:"Admi...", ...}} totalLeads={3}>
+                      <div style={{display:"flex", ...}}>
+                        <Sidebar>
+                        <div className="main-content" style={{flex:1, ...}}>
+                          <header style={{...}}>
+                            <div>
+                            <div style={{display:"flex", ...}}>
+                              <div style={{display:"flex", ...}}>
+                                <Search>
+                                <input
+                                  type="text"
+                                  placeholder="Search leads..."
+                                  style={{
++                                   background: "transparent"
++                                   border: "none"
++                                   outline: "none"
++                                   fontSize: "0.875rem"
++                                   width: "200px"
+-                                   width: "200px"
+-                                   background-image: "initial"
+-                                   background-position-x: "initial"
+-                                   background-position-y: "initial"
+-                                   background-size: "initial"
+-                                   background-repeat: "initial"
+-                                   background-attachment: "initial"
+-                                   background-origin: "initial"
+-                                   background-clip: "initial"
+-                                   background-color: "transparent"
+-                                   border-top-width: "initial"
+-                                   border-right-width: "initial"
+-                                   border-bottom-width: "initial"
+-                                   border-left-width: "initial"
+-                                   border-top-style: "none"
+-                                   border-right-style: "none"
+-                                   border-bottom-style: "none"
+-                                   border-left-style: "none"
+-                                   border-top-color: "initial"
+-                                   border-right-color: "initial"
+-                                   border-bottom-color: "initial"
+-                                   border-left-color: "initial"
+-                                   border-image-source: "initial"
+-                                   border-image-slice: "initial"
+-                                   border-image-width: "initial"
+-                                   border-image-outset: "initial"
+-                                   border-image-repeat: "initial"
+-                                   outline-color: "initial"
+-                                   outline-style: "none"
+-                                   outline-width: "initial"
+-                                   font-size: "0.875rem"
+-                                   caret-color: "transparent"
+                                  }}
+                                >
+                              ...
+                          ...
+                ...
+              ...
+
+ GET /api/auth/session 200 in 33ms (next.js: 6ms, application-code: 28ms)
+ GET /api/auth/session 200 in 25ms (next.js: 6ms, application-code: 19ms)
+○ Compiling /leads ...
