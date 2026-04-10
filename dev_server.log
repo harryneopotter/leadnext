@@ -1,0 +1,101 @@
+
+> leadcrm-next@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+- Environments: .env
+✓ Ready in 554ms
+
+ HEAD /questions 307 in 676ms (next.js: 332ms, application-code: 344ms)
+ GET /login 200 in 1000ms (next.js: 749ms, proxy.ts: 97ms, application-code: 154ms)
+ GET /api/auth/csrf 200 in 1554ms (next.js: 1528ms, application-code: 26ms)
+[31m[auth][error][0m CallbackRouteError: Read more at https://errors.authjs.dev#callbackrouteerror
+[31m[auth][cause][0m: PrismaClientInitializationError:
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/app/.next/dev/server/chunks/[root-of-the-server]__0j8hn97._.js:127:170
+
+  124 }
+  125 const email = credentials.email;
+  126 const password = credentials.password;
+→ 127 const user = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at $n.handleRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:7615)
+    at $n.handleAndLogRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/app/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/app/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async Object.authorize (/app/.next/dev/server/chunks/[root-of-the-server]__0j8hn97._.js:127:30)
+    at async Module.callback (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:4307:39)
+    at async AuthInternal (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:5148:24)
+    at async Auth (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:5370:34)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:40732)
+    at async AppRouteRouteModule.handle (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:47861)
+    at async responseGenerator (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18289:38)
+    at async AppRouteRouteModule.handleResponse (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:1:227216)
+    at async handleResponse (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18352:32)
+    at async Module.handler (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18406:13)
+    at async DevServer.renderToResponseWithComponentsImpl (/app/node_modules/next/dist/server/base-server.js:1454:9)
+    at async DevServer.renderPageComponent (/app/node_modules/next/dist/server/base-server.js:1506:24)
+    at async DevServer.renderToResponseImpl (/app/node_modules/next/dist/server/base-server.js:1556:32)
+    at async DevServer.pipeImpl (/app/node_modules/next/dist/server/base-server.js:1043:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/app/node_modules/next/dist/server/next-server.js:338:17)
+    at async DevServer.handleRequestImpl (/app/node_modules/next/dist/server/base-server.js:934:17)
+    at async /app/node_modules/next/dist/server/dev/next-dev-server.js:394:20
+    at async Span.traceAsyncFn (/app/node_modules/next/dist/trace/trace.js:164:20)
+    at async DevServer.handleRequest (/app/node_modules/next/dist/server/dev/next-dev-server.js:390:24)
+    at async invokeRender (/app/node_modules/next/dist/server/lib/router-server.js:253:21)
+    at async handleRequest (/app/node_modules/next/dist/server/lib/router-server.js:452:24)
+    at async requestHandlerImpl (/app/node_modules/next/dist/server/lib/router-server.js:501:13)
+    at async Server.requestListener (/app/node_modules/next/dist/server/lib/start-server.js:225:13)
+[31m[auth][details][0m: {
+  "provider": "credentials"
+}
+ POST /api/auth/callback/credentials 302 in 94ms (next.js: 20ms, application-code: 74ms)
+ GET /login?error=Configuration 200 in 81ms (next.js: 10ms, proxy.ts: 7ms, application-code: 64ms)
+ GET /api/auth/csrf 200 in 30ms (next.js: 20ms, application-code: 9ms)
+[31m[auth][error][0m CallbackRouteError: Read more at https://errors.authjs.dev#callbackrouteerror
+[31m[auth][cause][0m: PrismaClientInitializationError:
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/app/.next/dev/server/chunks/[root-of-the-server]__0j8hn97._.js:127:170
+
+  124 }
+  125 const email = credentials.email;
+  126 const password = credentials.password;
+→ 127 const user = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at $n.handleRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:7615)
+    at $n.handleAndLogRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/app/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/app/node_modules/@prisma/client/runtime/library.js:130:9633)
+    at async Object.authorize (/app/.next/dev/server/chunks/[root-of-the-server]__0j8hn97._.js:127:30)
+    at async Module.callback (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:4307:39)
+    at async AuthInternal (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:5148:24)
+    at async Auth (/app/.next/dev/server/chunks/0p~b_@auth_core_06e2gry._.js:5370:34)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:40732)
+    at async AppRouteRouteModule.handle (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:47861)
+    at async responseGenerator (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18289:38)
+    at async AppRouteRouteModule.handleResponse (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:1:227216)
+    at async handleResponse (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18352:32)
+    at async Module.handler (/app/.next/dev/server/chunks/node_modules_next_0fkt7xl._.js:18406:13)
+    at async DevServer.renderToResponseWithComponentsImpl (/app/node_modules/next/dist/server/base-server.js:1454:9)
+    at async DevServer.renderPageComponent (/app/node_modules/next/dist/server/base-server.js:1506:24)
+    at async DevServer.renderToResponseImpl (/app/node_modules/next/dist/server/base-server.js:1556:32)
+    at async DevServer.pipeImpl (/app/node_modules/next/dist/server/base-server.js:1043:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/app/node_modules/next/dist/server/next-server.js:338:17)
+    at async DevServer.handleRequestImpl (/app/node_modules/next/dist/server/base-server.js:934:17)
+    at async /app/node_modules/next/dist/server/dev/next-dev-server.js:394:20
+    at async Span.traceAsyncFn (/app/node_modules/next/dist/trace/trace.js:164:20)
+    at async DevServer.handleRequest (/app/node_modules/next/dist/server/dev/next-dev-server.js:390:24)
+    at async invokeRender (/app/node_modules/next/dist/server/lib/router-server.js:253:21)
+    at async handleRequest (/app/node_modules/next/dist/server/lib/router-server.js:452:24)
+    at async requestHandlerImpl (/app/node_modules/next/dist/server/lib/router-server.js:501:13)
+    at async Server.requestListener (/app/node_modules/next/dist/server/lib/start-server.js:225:13)
+[31m[auth][details][0m: {
+  "provider": "credentials"
+}
+ POST /api/auth/callback/credentials 302 in 54ms (next.js: 5ms, application-code: 49ms)
