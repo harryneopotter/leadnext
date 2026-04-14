@@ -1,1 +1,1 @@
-{"buildCommand":"node scripts/migrate.js && prisma generate && next build","env":{"SUPABASE_URL":"<your_supabase_url>","SUPABASE_ANON_KEY":"<your_supabase_anon_key>","SUPABASE_SERVICE_ROLE_KEY":"<your_supabase_service_role_key>"}}
+{"buildCommand":"ALLOW_PRISMA_BASELINE=1 npm run migrate:deploy:safe && npm run verify:prod-schema && prisma generate && next build"}
