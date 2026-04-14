@@ -8,6 +8,6 @@ if [ -z "$DATABASE_URL" ]; then
   exit 0
 fi
 
-npx prisma migrate deploy
+prisma migrate deploy
 
 echo "Migrations completed successfully"
