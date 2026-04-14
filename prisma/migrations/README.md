@@ -7,7 +7,7 @@ schema already exists and the initial migration (`0_init`) must **not** be
 re-applied. Instead, mark it as already applied:
 
 ```bash
-npx prisma migrate resolve --applied 0_init
+prisma migrate resolve --applied 0_init
 ```
 
 After that, `prisma migrate deploy` will skip `0_init` and only apply any
