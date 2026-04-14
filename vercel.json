@@ -1,7 +1,1 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "prisma generate && next build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "regions": ["bom1"]
-}
+{"buildCommand":"node scripts/migrate.js && prisma generate && next build","env":{"SUPABASE_URL":"<your_supabase_url>","SUPABASE_ANON_KEY":"<your_supabase_anon_key>","SUPABASE_SERVICE_ROLE_KEY":"<your_supabase_service_role_key>"}}
