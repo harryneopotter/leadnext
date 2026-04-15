@@ -245,8 +245,7 @@ User ──  AdminSettings
 | **ActivityLog** | Immutable audit trail | `action`, `details` (JSON with before/after) |
 | **AdminSettings** | Per-admin WhatsApp & SMTP config | Encrypted tokens, timezone, lead questions |
 
-**Lead lifecycle:** `NEW` → `INTERESTED` → `HOT` → `CONVERTED`
-&nbsp;&nbsp;&nbsp;&nbsp;*(also: `NOT_INTERESTED` · `NOT_PICKED` · `FOLLOW_UP`)*
+**Lead lifecycle:** `NEW` → `INTERESTED` → `HOT` → `CONVERTED` *(also: `NOT_INTERESTED` · `NOT_PICKED` · `FOLLOW_UP`)*
 
 **Lead sources:** `MANUAL` · `WHATSAPP` · `FACEBOOK` · `WEBSITE` · `REFERRAL` · `OTHER`
 
